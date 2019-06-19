@@ -77,8 +77,8 @@ public class JavaApplication5 extends javax.swing.JFrame {
 
         }
          try {  // Пробуем инициализировать другое окно с классом в этом
-             RunGraph frame = new RunGraph(SAMPLE_CSV_FILE_PATH);
-             //NewJFrameSimpleGraph_1 frame = new NewJFrameSimpleGraph_1(SAMPLE_CSV_FILE_PATH);
+             //RunGraph frame = new RunGraph(SAMPLE_CSV_FILE_PATH);
+             NewJFrameSimpleGraph_1 frame = new NewJFrameSimpleGraph_1(SAMPLE_CSV_FILE_PATH);
             
             //frame.setLayout(new BorderLayout());
             //frame.add(ui, BorderLayout.CENTER);
@@ -87,8 +87,8 @@ public class JavaApplication5 extends javax.swing.JFrame {
             frame.setDefaultLookAndFeelDecorated(true); // С такими параметрами завелось отображение 2 Фрейма на windows7
 
             frame.setLocationRelativeTo(null); // position in the center of the screen
-            frame.setDefaultCloseOperation(RunGraph.DISPOSE_ON_CLOSE);
-            //frame.setDefaultCloseOperation(NewJFrameSimpleGraph_1.DISPOSE_ON_CLOSE);
+            //frame.setDefaultCloseOperation(RunGraph.DISPOSE_ON_CLOSE);
+            frame.setDefaultCloseOperation(NewJFrameSimpleGraph_1.DISPOSE_ON_CLOSE);
                     
             //new RunGraph(SAMPLE_CSV_FILE_PATH).setVisible(true);
             frame.setVisible(true);

@@ -77,7 +77,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     private Crosshair xCrosshair;
 
     private Crosshair yCrosshair;
-    XYSeriesCollection  xyDataset = (XYSeriesCollection ) constructorGraph(); // создадим отдельным элементом для перебора в итератор
+    XYSeriesCollection  xyDataset;
 
     //TimeSeriesCollection  xyDataset = (TimeSeriesCollection ) createDataset(); // создадим отдельным элементом для перебора в итератор
    
@@ -93,14 +93,14 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         xyDataset = (XYSeriesCollection ) constructorGraph(); // Инициализация тоже должна быть в конструкторе
         initComponents();
     }
-  /*  public NewJFrameSimpleGraph_1() throws FileNotFoundException, IOException{ // вот так инициализация проходит
+    public NewJFrameSimpleGraph_1() throws FileNotFoundException, IOException{ // вот так инициализация проходит
          //       super(s);
         //JPanel jpanel = createDemoPanel();
         //jpanel.setPreferredSize(new Dimension(640, 480));
         //add(jpanel);
         initComponents();
     }
-  */
+  
         //этот метод не реализуется
         public JPanel createDemoPanel() throws IOException {
         JFreeChart jfreechart = ChartFactory.createScatterPlot(
