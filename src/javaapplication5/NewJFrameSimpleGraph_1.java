@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -179,12 +180,57 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         return dataset;
     }
     
+    // получаем имена столбцов и может быть формируем правильный arraylist массивов данных
+    public String[] getNamedGraph() throws UnsupportedEncodingException, FileNotFoundException, IOException{
+        String[] listNamedGraph = null;
+        InputStreamReader reader1 = new InputStreamReader(new FileInputStream(SAMPLE_CSV_FILE_PATH), "UTF8");  // тут отличия от оригинала так как нужно декодировать
+        CSVReader reader = new CSVReader(reader1, '\t', '"');
+        List<String[]> allRows = reader.readAll();
+        int strN =0; // Переменная для определнеие строки имени
+        for(String[] row : allRows){ 
+            if (row.length <=1){ // проверяем есть ли хоть два столбца
+              ++strN;
+              continue;}
+            else {
+              boolean acces = false;
+              for(int i=0; i<row.length; ++i) // пробегаем по строке 
+              {
+                  if (checkString(row[i])) acces = false; // Определяем числа ли это если хоть один цыфры то пропуск
+                  else acces = true;
+              }
+              if (acces){
+              listNamedGraph = new String[row.length]; // создаем массив такой же длинны как row
+              System.arraycopy( row,0 ,listNamedGraph, 0, row.length); // Копируем полностью массив имени
+              break;
+              }
+              ++strN; // Конечное число от куда начинаются данные
+              } 
+        }
+        System.out.println("Before size ->" + allRows.size());
+        // Удаляем ненужные данные вместе с именами список выше их есть
+        for(int i=0; i<strN; ++i){allRows.remove(i);}
+        System.out.println("After size ->" + allRows.size());
+        System.out.println(strN);
+        System.out.println(listNamedGraph[0]);
+    return listNamedGraph;}
+    
+    //Фукция проверки строка ли это
+    
+    public boolean checkString(String string) {
+        try {
+            Double.parseDouble(string);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
     
     // наши графики из другого проекта
     private XYDataset constructorGraph() throws FileNotFoundException, IOException{
+        getNamedGraph();
     
-        InputStreamReader reader1 = new InputStreamReader(new FileInputStream(SAMPLE_CSV_FILE_PATH), "UTF8");  // тут отличия от оригинала так как нужно декодировать
-        CSVReader reader = new CSVReader(reader1, '\t', '"');
+    InputStreamReader reader1 = new InputStreamReader(new FileInputStream(SAMPLE_CSV_FILE_PATH), "UTF8");  // тут отличия от оригинала так как нужно декодировать
+    CSVReader reader = new CSVReader(reader1, '\t', '"');
     List<String[]> allRows = reader.readAll();
      
     
@@ -401,7 +447,8 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
                 dataFromGraph.setItem();
                 int iTime = dataFromGraph.getCurrentTime();// получим время из созданного листа
                 curentTime = listTime.get(iTime);
-                toFieadTXT += XYDescription + "->" + dataFromGraph.getItemData() +"\n" ;
+                String formattedDouble = new DecimalFormat("#0.000000").format(dataFromGraph.getItemData());
+                toFieadTXT += XYDescription + "->" + formattedDouble +"\n" ;
               }
               toFieadTXT += "\n" + "Time graph --> " + curentTime + "\n";  
        /* try {
@@ -476,7 +523,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 288, Short.MAX_VALUE)
+            .addGap(0, 629, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -493,12 +540,12 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
