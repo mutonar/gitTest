@@ -79,6 +79,8 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
 
     private Crosshair yCrosshair;
     XYSeriesCollection  xyDataset;
+    List<String[]> allRows; // главный лист всех даных обрабатываемых и отображаемых
+    String[] listNamedGraph = null; // Список таблиц
 
     //TimeSeriesCollection  xyDataset = (TimeSeriesCollection ) createDataset(); // создадим отдельным элементом для перебора в итератор
    
@@ -180,12 +182,12 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         return dataset;
     }
     
+    // Чтение файла с данными
     // получаем имена столбцов и может быть формируем правильный arraylist массивов данных
     public String[] getNamedGraph() throws UnsupportedEncodingException, FileNotFoundException, IOException{
-        String[] listNamedGraph = null;
         InputStreamReader reader1 = new InputStreamReader(new FileInputStream(SAMPLE_CSV_FILE_PATH), "UTF8");  // тут отличия от оригинала так как нужно декодировать
         CSVReader reader = new CSVReader(reader1, '\t', '"');
-        List<String[]> allRows = reader.readAll();
+        this.allRows = reader.readAll();
         int strN =0; // Переменная для определнеие строки имени
         for(String[] row : allRows){ 
             if (row.length <=1){ // проверяем есть ли хоть два столбца
@@ -208,14 +210,13 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         }
         System.out.println("Before size ->" + allRows.size());
         // Удаляем ненужные данные вместе с именами список выше их есть
-        for(int i=0; i<strN; ++i){allRows.remove(i);}
+        for(int i=0; i<strN; ++i){allRows.remove(i);} // c обрезкой какая то лажа
         System.out.println("After size ->" + allRows.size());
         System.out.println(strN);
         System.out.println(listNamedGraph[0]);
     return listNamedGraph;}
     
     //Фукция проверки строка ли это
-    
     public boolean checkString(String string) {
         try {
             Double.parseDouble(string);
@@ -225,13 +226,18 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         return true;
     }
     
+    //Возвращает список с названиями столбцов
+    String[] getlistNamedGraph(){
+    return listNamedGraph;
+    }
+    
     // наши графики из другого проекта
     private XYDataset constructorGraph() throws FileNotFoundException, IOException{
         getNamedGraph();
     
     InputStreamReader reader1 = new InputStreamReader(new FileInputStream(SAMPLE_CSV_FILE_PATH), "UTF8");  // тут отличия от оригинала так как нужно декодировать
     CSVReader reader = new CSVReader(reader1, '\t', '"');
-    List<String[]> allRows = reader.readAll();
+    //List<String[]> allRows = reader.readAll();
      
     
 

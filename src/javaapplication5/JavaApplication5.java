@@ -10,7 +10,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
+import javax.swing.JList;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -19,6 +23,10 @@ import javax.swing.JFileChooser;
 public class JavaApplication5 extends javax.swing.JFrame {
 
     private String SAMPLE_CSV_FILE_PATH;
+    DefaultListModel listModel = new DefaultListModel(); // модель для динамического добавления данных
+    int[] columnSend = null;
+    // Листенер работает только в настройке элемента в графике
+    //jList1.addListSelectionListener(new listSelectionListener());  
 
     /**
      * Creates new form JavaApplication5
@@ -37,6 +45,8 @@ public class JavaApplication5 extends javax.swing.JFrame {
     private void initComponents() {
 
         jButton1 = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jList1 = new JList<String>(listModel);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -47,26 +57,34 @@ public class JavaApplication5 extends javax.swing.JFrame {
             }
         });
 
+        jList1.addListSelectionListener(new listSelectionListener());
+        jScrollPane1.setViewportView(jList1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(jButton1)
-                .addContainerGap(295, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 254, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton1)
-                .addContainerGap(263, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    @SuppressWarnings("empty-statement")
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
     JFileChooser fileopen = new JFileChooser(System.getProperty("user.dir"));
     //JFileChooser fileopen = new JFileChooser();
@@ -76,9 +94,17 @@ public class JavaApplication5 extends javax.swing.JFrame {
         SAMPLE_CSV_FILE_PATH = file.getPath();
 
         }
-         try {  // Пробуем инициализировать другое окно с классом в этом
+         try {
+            // инициализировать другое окно с классом в этом
              //RunGraph frame = new RunGraph(SAMPLE_CSV_FILE_PATH);
              NewJFrameSimpleGraph_1 frame = new NewJFrameSimpleGraph_1(SAMPLE_CSV_FILE_PATH);
+             
+             String[]  dataList = frame.getlistNamedGraph();         
+             for (int i = 0; i < dataList.length; i++) {
+               listModel.addElement(dataList[i]);
+             }
+            //int removeIndex = 3;
+            //listModel.remove(removeIndex); // Это удаление элементов
             
             //frame.setLayout(new BorderLayout());
             //frame.add(ui, BorderLayout.CENTER);
@@ -135,8 +161,26 @@ public class JavaApplication5 extends javax.swing.JFrame {
             }
         });
     }
+    
+    // Класс нашего слушателя списка
+    class listSelectionListener implements ListSelectionListener {
+        public void valueChanged(ListSelectionEvent e) {
+            // Выделенная строка
+            columnSend = ((JList<?>)e.getSource()).getSelectedIndices();
+            for(int i=0; i<columnSend.length; ++i){
+                System.out.print(columnSend[i]);
+            }
+            System.out.println();
+         //   int selected = ((JList<?>)e.getSource()).
+           //                                   getSelectedIndex();
+           // System.out.println ("Выделенная строка : " + 
+            //                         String.valueOf(selected));
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JList jList1;
+    private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 }
