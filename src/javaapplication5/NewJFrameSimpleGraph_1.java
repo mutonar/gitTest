@@ -81,34 +81,45 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     XYSeriesCollection  xyDataset;
     List<String[]> allRows; // главный лист всех даных обрабатываемых и отображаемых
     String[] listNamedGraph = null; // Список таблиц
+    int[] massColum = {1,2,3,4,5,6,7,8,9,10};  // какие номера столбцов рисуем просто по умолчаю вот это
 
     //TimeSeriesCollection  xyDataset = (TimeSeriesCollection ) createDataset(); // создадим отдельным элементом для перебора в итератор
    
     /**
      * Creates new form NewJFrame
      */
-     public NewJFrameSimpleGraph_1(String SAMPLE_CSV_FILE_PATH) throws FileNotFoundException, IOException{ // вот так инициализация проходит
+     public NewJFrameSimpleGraph_1(String SAMPLE_CSV_FILE_PATH, int[] massColum) throws FileNotFoundException, IOException{ 
+         this.massColum = massColum;
       this.SAMPLE_CSV_FILE_PATH = SAMPLE_CSV_FILE_PATH;
         //       super(s);
         //JPanel jpanel = createDemoPanel();
         //jpanel.setPreferredSize(new Dimension(640, 480));
         //add(jpanel);
-        xyDataset = (XYSeriesCollection ) constructorGraph(); // Инициализация тоже должна быть в конструкторе
+        xyDataset = (XYSeriesCollection ) constructorGraph(massColum); // Инициализация тоже должна быть в конструкторе
         initComponents();
     }
-    public NewJFrameSimpleGraph_1() throws FileNotFoundException, IOException{ // вот так инициализация проходит
+    public NewJFrameSimpleGraph_1() throws FileNotFoundException, IOException{ 
          //       super(s);
         //JPanel jpanel = createDemoPanel();
         //jpanel.setPreferredSize(new Dimension(640, 480));
         //add(jpanel);
         initComponents();
     }
-  
+    
+    //Отдельная инициация компонентов
+    public void iСNewJFrameSimpleGraph() { 
+         //       super(s);
+        //JPanel jpanel = createDemoPanel();
+        //jpanel.setPreferredSize(new Dimension(640, 480));
+        //add(jpanel);
+        initComponents();
+    }
+  /*
         //этот метод не реализуется
         public JPanel createDemoPanel() throws IOException {
         JFreeChart jfreechart = ChartFactory.createScatterPlot(
            // "Scatter Plot Demo", "X", "Y", samplexydataset2(),
-             "Scatter Plot Demo", "X", "Y", constructorGraph(),
+             "Scatter Plot Demo", "X", "Y", constructorGraph(massColum),
             PlotOrientation.VERTICAL, true, true, false);
         Shape cross = ShapeUtilities.createDiagonalCross(3, 1); // Крестики
         XYPlot xyPlot = (XYPlot) jfreechart.getPlot();
@@ -137,7 +148,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         xySeriesCollection.addSeries(series);
         return xySeriesCollection;
     }
-    
+    */
      private JPanel createContent() {
         //JFreeChart chart = createChart(createDataset());
        
@@ -210,7 +221,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         }
         System.out.println("Before size ->" + allRows.size());
         // Удаляем ненужные данные вместе с именами список выше их есть
-        for(int i=0; i<strN; ++i){allRows.remove(i);} // c обрезкой какая то лажа
+        for(int i=0; i<strN; ++i){allRows.remove(i);} // c обрезкой какая то лажа решено в файле DataFromFile
         System.out.println("After size ->" + allRows.size());
         System.out.println(strN);
         System.out.println(listNamedGraph[0]);
@@ -231,12 +242,20 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     return listNamedGraph;
     }
     
-    // наши графики из другого проекта
-    private XYDataset constructorGraph() throws FileNotFoundException, IOException{
-        getNamedGraph();
+    // устанавливаем что рисуем
+    void setMassColum(int[] massColum ){
+      //this.massColum =  = new int[massColum.length]; // создаем массив такой же длинны как row
+    System.arraycopy( massColum,0 ,listNamedGraph, 0, massColum.length); // Копируем полностью массив имени
+    }
     
-    InputStreamReader reader1 = new InputStreamReader(new FileInputStream(SAMPLE_CSV_FILE_PATH), "UTF8");  // тут отличия от оригинала так как нужно декодировать
-    CSVReader reader = new CSVReader(reader1, '\t', '"');
+    // наши графики из другого проекта // Уже более-менее правильно
+    private XYDataset constructorGraph( int[] massColum ) throws FileNotFoundException, IOException{
+    getNamedGraph();
+    this.massColum = massColum;  // какие столбцы рисуем при вызове
+     // какие колонки используем дл рисования 0 это время его не дергаем
+    
+  //  InputStreamReader reader1 = new InputStreamReader(new FileInputStream(SAMPLE_CSV_FILE_PATH), "UTF8");  // тут отличия от оригинала так как нужно декодировать
+   // CSVReader reader = new CSVReader(reader1, '\t', '"');
     //List<String[]> allRows = reader.readAll();
      
     
@@ -279,13 +298,14 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         if (matcher1.matches()){ 
         date = matcher1.group(1); // годы месяцы число
         time = matcher1.group(2); // время
+        //System.out.println(time);
        }
         listTime.add(time);
       }
       // тут создаем коллекцию из массива графиков по количеству столбцов
       XYSeriesCollection xyserColl = new XYSeriesCollection();
       //int[] massColum = {5,6,7,8,9,10,11,15,70,100,201}; // для дальнейшего формирования массива
-      int[] massColum = {1,2,3,4,5,6,7}; // какие колонки используем дл рисования
+      
     /*
       // Тут по фору создаем массив из количества имен что то не то с ним
       int i3 =0;
@@ -325,8 +345,10 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         if (row.length > ic && row[ic] != null){ // Проверяем на пустоту  элемента массива
                // System.out.println(row[ic]);
                 String item = row[ic];
-             if (item.equals("false") || item.equals("true") || item.equals(null)){ // ищет false true еще надо время
-                System.out.println("Find True false");  
+             if (item.equals("false") || item.equals("true") || item.equals("FALSE") || item.equals("TRUE") || item.equals(null)){ // ищет false true еще надо время
+                System.out.println("Find True false");
+                if (item.equals("false") || item.equals("FALSE") || item.equals(null)){tmp.add(xi, Float.valueOf(0));}
+                if( item.equals("true") || item.equals("true")){tmp.add(xi, Float.valueOf(1));}
              }else{
                               // регулярка для времени
                  Pattern pattern1 = Pattern.compile("^(.*) (.*)$"); 
