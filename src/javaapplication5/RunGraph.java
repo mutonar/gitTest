@@ -282,7 +282,7 @@ public class RunGraph extends javax.swing.JFrame implements ChartMouseListener {
                // System.out.println(row[ic]);
                 String item = row[ic];
              if (item.equals("false") || item.equals("true") || item.equals(null)){ // ищет false true еще надо время
-                System.out.println("Find True false");  
+               // System.out.println("Find True false");  
              }else{
                               // регулярка для времени
                  Pattern pattern1 = Pattern.compile("^(.*) (.*)$"); 
@@ -292,7 +292,7 @@ public class RunGraph extends javax.swing.JFrame implements ChartMouseListener {
                  if (matcher1.matches()){ 
                   date = matcher1.group(1); // годы месяцы число
                   time = matcher1.group(2); // время
-                  System.out.println(time);
+                  //System.out.println(time);
                   //Date currentD = new Date();
                   //System.out.println(currentD + " <-- Current data");
 

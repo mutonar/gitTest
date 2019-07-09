@@ -199,9 +199,9 @@ public class JavaApplication5 extends javax.swing.JFrame {
             // Выделенная строка
             columnSend = ((JList<?>)e.getSource()).getSelectedIndices();
             for(int i=0; i<columnSend.length; ++i){
-                System.out.print(columnSend[i]);
+               // System.out.print(columnSend[i]);
             }
-            System.out.println();
+           // System.out.println();
          //   int selected = ((JList<?>)e.getSource()).
            //                                   getSelectedIndex();
            // System.out.println ("Выделенная строка : " + 

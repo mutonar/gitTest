@@ -219,12 +219,12 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
               ++strN; // Конечное число от куда начинаются данные
               } 
         }
-        System.out.println("Before size ->" + allRows.size());
+       // System.out.println("Before size ->" + allRows.size());
         // Удаляем ненужные данные вместе с именами список выше их есть
         for(int i=0; i<strN; ++i){allRows.remove(i);} // c обрезкой какая то лажа решено в файле DataFromFile
-        System.out.println("After size ->" + allRows.size());
-        System.out.println(strN);
-        System.out.println(listNamedGraph[0]);
+       // System.out.println("After size ->" + allRows.size());
+       // System.out.println(strN);
+      //  System.out.println(listNamedGraph[0]);
     return listNamedGraph;}
     
     //Фукция проверки строка ли это

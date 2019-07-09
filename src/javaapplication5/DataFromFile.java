@@ -54,15 +54,15 @@ public class DataFromFile {
               }
               } 
         }
-        System.out.println("Before size ->" + allRows.size());
+       // System.out.println("Before size ->" + allRows.size());
         // Удаляем ненужные данные вместе с именами список выше их есть
         for(int id=0; id<strN; ++id){
-            System.out.println("What is del --> " + allRows.get(id)[0]);
+          //  System.out.println("What is del --> " + allRows.get(id)[0]);
             allRows.remove(0); // С какого элемента удаляем ненужное
-            System.out.println("len allRows --> " + allRows.size());
+          //  System.out.println("len allRows --> " + allRows.size());
         } 
-        System.out.println("After size ->" + allRows.size());
-        System.out.println("String num data --> " + strN);
+       // System.out.println("After size ->" + allRows.size());
+       // System.out.println("String num data --> " + strN);
         
         if (delStrName) allRows.remove(0); // если хотим удалить строку с именами колонок
        }
