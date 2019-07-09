@@ -169,7 +169,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
 
     private JFreeChart createChart(XYDataset dataset) {
         JFreeChart chart = ChartFactory.createXYLineChart("Crosshair Demo", 
-                "X", "Y", dataset);
+                "X1", "Y", dataset);  // тут названия систем координат
         return chart;
     }
     
@@ -346,7 +346,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
                // System.out.println(row[ic]);
                 String item = row[ic];
              if (item.equals("false") || item.equals("true") || item.equals("FALSE") || item.equals("TRUE") || item.equals(null)){ // ищет false true еще надо время
-                System.out.println("Find True false");
+               // System.out.println("Find True false");
                 if (item.equals("false") || item.equals("FALSE") || item.equals(null)){tmp.add(xi, Float.valueOf(0));}
                 if( item.equals("true") || item.equals("true")){tmp.add(xi, Float.valueOf(1));}
              }else{
@@ -395,51 +395,9 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     }
 */
     @Override
-    public void chartMouseClicked(ChartMouseEvent cme) {
+    public void chartMouseClicked(ChartMouseEvent event) {
         
-       /* 
-        Rectangle2D dataArea = this.chartPanel.getScreenDataArea();
-        JFreeChart chart = cme.getChart();
-        XYPlot plot = (XYPlot) chart.getPlot();
-        
-            Point2D  po = chartPanel.translateScreenToJava2D(cme.getTrigger().getPoint()); // даем точки нажатия клафиши мыши
-            
-            Rectangle2D plotArea = chartPanel.getScreenDataArea();
-            plot = (XYPlot) chart.getPlot(); 
-            ValueAxis xAxis = plot.getDomainAxis();
-
-            double x = xAxis.java2DToValue(cme.getTrigger().getX(), dataArea, RectangleEdge.BOTTOM);
-            float chartX = (float) plot.getDomainAxis().java2DToValue(po.getX(), plotArea, plot.getDomainAxisEdge());  // тут различается получение данных
-            float charty = (float) plot.getDomainAxis().java2DToValue(po.getY(), plotArea, plot.getDomainAxisEdge());  // тут различается получение данных
-            
-            System.out.println(x + "  " + chartX + "  " + charty);
-            
-            // это почти что нужно. надо как то по иксу по Y пройти и получим значение
-           
-            ChartEntity ce = cme.getEntity();
-            System.out.println(ce.toString());
-            
-                XYItemEntity e2 = new XYItemEntity(
-                  plotArea,
-                new TimeSeriesCollection(), 1, 9, "ToolTip", "URL"
-                );
-        */
-            /*
-            if (ce instanceof XYItemEntity) {
-             XYItemEntity e = (XYItemEntity) ce;
-             System.out.println(ce.getToolTipText());
-             System.out.println(e.toString());
-             XYDataset d = e.getDataset();
-             int s = e.getSeriesIndex();
-             int i = e.getItem();
-             String name = ce.getURLText();
-             System.out.println("Ingraphics - X:" + d.getX(s, i) + ",Ingraphics  Y:" + d.getY(s, i) + "Name = " + name);
-            } 
-            */
-    }
-
-    @Override
-    public void chartMouseMoved(ChartMouseEvent event) {
+      
         // тут похоже реализовавает движение по графику
         Rectangle2D dataArea = this.chartPanel.getScreenDataArea();
         JFreeChart chart = event.getChart();
@@ -479,6 +437,65 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
                 toFieadTXT += XYDescription + "->" + formattedDouble +"\n" ;
               }
               toFieadTXT += "\n" + "Time graph --> " + curentTime + "\n";  
+       /* try {
+            toFieadTXT = new String(toFieadTXT.getBytes("Cp1251"));
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(JavaApplication5.class.getName()).log(Level.SEVERE, null, ex);
+        }
+              */
+   
+              jTextArea1.setText(toFieadTXT);
+        
+    }
+
+    @Override
+    public void chartMouseMoved(ChartMouseEvent event) {}
+    
+    //@Override // что бы не убирать коменты внутри блока
+    public void chartMouseMoved_tmp(ChartMouseEvent event) {
+        //закоментировал что бы можно было следить за данными по клику
+        
+        // тут похоже реализовавает движение по графику
+        Rectangle2D dataArea = this.chartPanel.getScreenDataArea();
+        JFreeChart chart = event.getChart();
+        XYPlot plot = (XYPlot) chart.getPlot();
+        // узнаем что такое XYPlot
+         
+        
+        ValueAxis xAxis = plot.getDomainAxis();
+        double x = xAxis.java2DToValue(event.getTrigger().getX(), dataArea, RectangleEdge.BOTTOM);
+        double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x); // тут похоже находим координаты нашего y
+        
+        this.xCrosshair.setValue(x); // это реализация движения шкалы по x y внизу
+      //  this.yCrosshair.setValue(y);
+        
+        
+       //данные получаем с графиков для обычных
+            /*  List<XYSeries> werries = xyDataset.getSeries();
+              ListIterator<XYSeries> iterator = werries.listIterator(); 
+              while (iterator.hasNext()) { 
+              double yinterpol = interpolate(iterator.next(), x);  // с Интерполяцией трудность
+              System.out.println("Item interpolicia = " + yinterpol );
+              }
+              */
+              //данные получаем с графиков пробуем для времени
+              List<XYSeries> werries = xyDataset.getSeries();
+              ListIterator<XYSeries> iterator = werries.listIterator(); 
+              String toFieadTXT = "";
+              String curentTime = "";
+              while (iterator.hasNext()) { 
+                  XYSeries tmpElemXY = iterator.next();
+                  String  XYDescription = tmpElemXY.getDescription();// получить описание
+                new dataFromGraph(tmpElemXY, x); // передаем данные в статический клас вместо метода Интерполяции
+                dataFromGraph.setItem();
+                int iTime = dataFromGraph.getCurrentTime();// получим время из созданного листа
+                curentTime = listTime.get(iTime);
+                String formattedDouble = new DecimalFormat("#0.000000").format(dataFromGraph.getItemData());
+                toFieadTXT += XYDescription + "->" + formattedDouble +"\n" ;
+              }
+              toFieadTXT += "\n" + "Time graph --> " + curentTime + "\n";  
+              
+              
        /* try {
             toFieadTXT = new String(toFieadTXT.getBytes("Cp1251"));
         } catch (UnsupportedEncodingException ex) {
