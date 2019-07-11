@@ -82,14 +82,19 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     List<String[]> allRows; // главный лист всех даных обрабатываемых и отображаемых
     String[] listNamedGraph = null; // Список таблиц
     int[] massColum = {1,2,3,4,5,6,7,8,9,10};  // какие номера столбцов рисуем просто по умолчаю вот это
+    String[] massName; // Имена полученные в конструкторе
+    boolean inversTime = false;
 
     //TimeSeriesCollection  xyDataset = (TimeSeriesCollection ) createDataset(); // создадим отдельным элементом для перебора в итератор
    
     /**
      * Creates new form NewJFrame
      */
-     public NewJFrameSimpleGraph_1(String SAMPLE_CSV_FILE_PATH, int[] massColum) throws FileNotFoundException, IOException{ 
-         this.massColum = massColum;
+     public NewJFrameSimpleGraph_1(String SAMPLE_CSV_FILE_PATH, int[] massColum ,String[] massName , List<String[]> allRows, boolean inversTime) throws FileNotFoundException, IOException{ 
+      this.inversTime = inversTime;
+      this.massName = massName;
+      this.allRows = allRows; // Тут внес последнее это
+      this.massColum = massColum;
       this.SAMPLE_CSV_FILE_PATH = SAMPLE_CSV_FILE_PATH;
         //       super(s);
         //JPanel jpanel = createDemoPanel();
@@ -168,7 +173,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     }
 
     private JFreeChart createChart(XYDataset dataset) {
-        JFreeChart chart = ChartFactory.createXYLineChart("Crosshair Demo", 
+        JFreeChart chart = ChartFactory.createXYLineChart("Окно просмотра графиков",  // Название графика
                 "X1", "Y", dataset);  // тут названия систем координат
         return chart;
     }
@@ -196,9 +201,11 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     // Чтение файла с данными
     // получаем имена столбцов и может быть формируем правильный arraylist массивов данных
     public String[] getNamedGraph() throws UnsupportedEncodingException, FileNotFoundException, IOException{
-        InputStreamReader reader1 = new InputStreamReader(new FileInputStream(SAMPLE_CSV_FILE_PATH), "UTF8");  // тут отличия от оригинала так как нужно декодировать
-        CSVReader reader = new CSVReader(reader1, '\t', '"');
-        this.allRows = reader.readAll();
+      //  InputStreamReader reader1 = new InputStreamReader(new FileInputStream(SAMPLE_CSV_FILE_PATH), "UTF8");  // тут отличия от оригинала так как нужно декодировать
+       // CSVReader reader = new CSVReader(reader1, '\t', '"');
+       
+        // this.allRows = reader.readAll(); // вот тут я просмотрел
+        
         int strN =0; // Переменная для определнеие строки имени
         for(String[] row : allRows){ 
             if (row.length <=1){ // проверяем есть ли хоть два столбца
@@ -221,7 +228,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         }
        // System.out.println("Before size ->" + allRows.size());
         // Удаляем ненужные данные вместе с именами список выше их есть
-        for(int i=0; i<strN; ++i){allRows.remove(i);} // c обрезкой какая то лажа решено в файле DataFromFile
+//        for(int i=0; i<strN; ++i){allRows.remove(i);} // c обрезкой какая то лажа решено в файле DataFromFile
        // System.out.println("After size ->" + allRows.size());
        // System.out.println(strN);
       //  System.out.println(listNamedGraph[0]);
@@ -260,10 +267,13 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
      
     
 
-     int colcolumn = 0; // тут не верно это все данные
+     int colcolumn = 0; // тут не верно это все данные тут вообще херня
      int strColumn =0; // Строка с именами
      int propusk = 0;// Сколько строк пропускаем с начала изначально 4
      int tmpColumn =0; 
+     
+     /* это хитрый ход который теперь не нужен
+     
      // получить масив имен что бы вставить в инвертированный файл
      String[] listName = allRows.get(strColumn);
      //Удаляем лист элемент с именами
@@ -272,8 +282,14 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
      Collections.reverse(allRows); // если надо инвертируем список с именами трудность
      //и добавляем имена
      allRows.add(0, listName);
+     */
+     if (inversTime){
+      Collections.reverse(allRows); // если надо инвертируем список с именами трудность
+     }
      
-     String[] nameColumn = null; // массив имен
+     String[] nameColumn = massName; // массив имен
+     //тоже теперь не надо
+     /*
      for(String[] row : allRows){ // выводим все даные
       if (row.length > colcolumn) colcolumn = row.length ;
         //System.out.println(row.length); // длина массива
@@ -283,14 +299,20 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         }
         ++tmpColumn;
      }
-    
+    */
+     // тут упрощенно что бы не накосячить мохоже максимальная длинна
+     for(String[] row : allRows){ // выводим все даные
+      if (row.length > colcolumn) colcolumn = row.length ;
+        ++tmpColumn;
+     }
+     
        // Создание массива времени   
       int xe =0;
       for(String[] row : allRows){
-        if (xe<=propusk){ // пропуск трех строк которые идут первые (Архив сигналов) --- и тд
+      /*  if (xe<=propusk){ // пропуск трех строк которые идут первые (Архив сигналов) --- и тд
         ++xe;
         continue;
-        }
+        }*/
         Pattern pattern1 = Pattern.compile("^(.*) (.*)$"); 
         Matcher matcher1 = pattern1.matcher(row[0]);
         String date =""; // годы месяцы число
@@ -320,19 +342,18 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
           
       }
       */ 
-      
-      
+      //не видит какие столбцы мы передали
       for(int j=0; j<massColum.length; ++j){
       int stolb = massColum[j]; // Определенные столбцы
-
+      
       for (int ic=0; ic<colcolumn; ++ic ){ //перебираем нужные столбцы
-         if (ic==stolb){ // нужный столбец и столбец времени      
+         if (ic==stolb){ // нужный столбец      
          String nameG = nameColumn[ic];
          //nameG = new String(nameG.getBytes("KOI8_R"));
          //nameG = new String(nameG.getBytes("Cp1251"));
 
 
-         XYSeries tmp = new XYSeries(nameG);
+         XYSeries tmp = new XYSeries(nameG); // вот тут как то надо смотреть списки имен
          tmp.setDescription(nameG);// вносим описание это тмя что бы вывести в поле в дальнейшем
          
          int xi =0;
@@ -345,16 +366,17 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         if (row.length > ic && row[ic] != null){ // Проверяем на пустоту  элемента массива
                // System.out.println(row[ic]);
                 String item = row[ic];
-             if (item.equals("false") || item.equals("true") || item.equals("FALSE") || item.equals("TRUE") || item.equals(null)){ // ищет false true еще надо время
+             if (item.equals("false") || item.equals("true") || item.equals("FALSE") || item.equals("TRUE") || item.equals(null) || item.equals("")){ // ищет false true еще надо время
                // System.out.println("Find True false");
-                if (item.equals("false") || item.equals("FALSE") || item.equals(null)){tmp.add(xi, Float.valueOf(0));}
+                if (item.equals("false") || item.equals("FALSE") || item.equals(null) || item.equals("")){tmp.add(xi, Float.valueOf(0));}
                 if( item.equals("true") || item.equals("true")){tmp.add(xi, Float.valueOf(1));}
+                
              }else{
                               // регулярка для времени
                  Pattern pattern1 = Pattern.compile("^(.*) (.*)$"); 
                  Matcher matcher1 = pattern1.matcher(item);
                  String date =""; // годы месяцы число
-                  String time = ""; // время
+                 String time = ""; // время
                  if (matcher1.matches()){ 
                   date = matcher1.group(1); // годы месяцы число
                   time = matcher1.group(2); // время
@@ -369,7 +391,8 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
 
          ++xi;
       }
-      xyserColl.addSeries(tmp); // Добавляем в коллекцию график
+         
+      xyserColl.addSeries(tmp); // Добавляем в коллекцию график // если одинаковое вхождение надо это обралить.
       } else continue;// if проверки столбца
     }
     } 

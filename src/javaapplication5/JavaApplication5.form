@@ -59,14 +59,17 @@
                       <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel1" min="-2" pref="125" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="jScrollPane1" max="32767" attributes="0"/>
+                      <Component id="jLabel2" pref="304" max="32767" attributes="0"/>
+                  </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane1" pref="202" max="32767" attributes="0"/>
-                      <Component id="jLabel2" max="32767" attributes="0"/>
+                      <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                      <Component id="jCheckBox1" min="-2" pref="159" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jButton2" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+                  <EmptySpace pref="42" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -78,16 +81,23 @@
               </Group>
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel2" alignment="3" min="-2" pref="19" max="-2" attributes="0"/>
+                      <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jButton2" min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel2" alignment="3" min="-2" pref="19" max="-2" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -105,7 +115,7 @@
         <Component class="javax.swing.JButton" name="jButton2">
           <Properties>
             <Property name="text" type="java.lang.String" value="3.&#x41f;&#x43e;&#x441;&#x442;&#x440;&#x43e;&#x438;&#x442;&#x44c; &#x433;&#x440;&#x430;&#x444;&#x438;&#x43a;"/>
-            <Property name="toolTipText" type="java.lang.String" value="&#x41d;&#x443;&#x436;&#x43d;&#x43e; &#x432;&#x44b;&#x431;&#x440;&#x430;&#x442;&#x44c; &#x445;&#x43e;&#x442;&#x44f; &#x431;&#x44b; &#x43e;&#x434;&#x438;&#x43d; &#x441;&#x442;&#x43e;&#x43b;&#x431;&#x435;&#x446;."/>
+            <Property name="toolTipText" type="java.lang.String" value="&#x41d;&#x443;&#x436;&#x43d;&#x43e; &#x432;&#x44b;&#x431;&#x440;&#x430;&#x442;&#x44c; &#x445;&#x43e;&#x442;&#x44f; &#x431;&#x44b; &#x43e;&#x434;&#x438;&#x43d; &#x441;&#x442;&#x43e;&#x43b;&#x431;&#x435;&#x446;. &#x41d;&#x430;&#x432;&#x435;&#x441;&#x442;&#x438; &#x43d;&#x430; &#x43d;&#x443;&#x436;&#x43d;&#x43e;&#x435; &#x43c;&#x435;&#x441;&#x442;&#x43e; &#x43d;&#x430; &#x433;&#x440;&#x430;&#x444;&#x438;&#x43a;&#x435; &#x438; &#x43a;&#x43b;&#x438;&#x43a;&#x43d;&#x443;&#x442;&#x44c; &#x43c;&#x44b;&#x448;&#x44c;&#x44e;."/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
@@ -134,13 +144,23 @@
         </Container>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
-            <Property name="text" type="java.lang.String" value="ver 0.1b"/>
+            <Property name="text" type="java.lang.String" value="ver 0.2b"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
           <Properties>
-            <Property name="text" type="java.lang.String" value="2.&#x412;&#x44b;&#x431;&#x440;&#x430;&#x442;&#x44c; &#x43f;&#x430;&#x440;&#x430;&#x43c;&#x435;&#x442;&#x440;&#x44b; &#x434;&#x43b;&#x44f; &#x43f;&#x440;&#x43e;&#x441;&#x43c;&#x43e;&#x442;&#x440;&#x430;"/>
+            <Property name="text" type="java.lang.String" value="2.&#x412;&#x44b;&#x431;&#x440;&#x430;&#x442;&#x44c; &#x43f;&#x430;&#x440;&#x430;&#x43c;&#x435;&#x442;&#x440;&#x44b; &#x434;&#x43b;&#x44f; &#x43f;&#x440;&#x43e;&#x441;&#x43c;&#x43e;&#x442;&#x440;&#x430; (Ctrl+L.mouse)"/>
+            <Property name="toolTipText" type="java.lang.String" value="&#x432;&#x44b;&#x431;&#x440;&#x430;&#x442;&#x44c; &#x441;&#x442;&#x43e;&#x43b;&#x431;&#x446;&#x44b; Ctrl + &#x43b;.&#x43a;&#x43d;&#x43e;&#x43f;&#x43a;&#x430; &#x43c;&#x44b;&#x448;&#x438;"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="jCheckBox1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="4.&#x418;&#x43d;&#x432;&#x435;&#x440;&#x442;&#x438;&#x440;&#x43e;&#x432;&#x430;&#x442;&#x44c; &#x432;&#x440;&#x435;&#x43c;&#x44f;"/>
+            <Property name="toolTipText" type="java.lang.String" value="&#x41e;&#x442;&#x432;&#x435;&#x447;&#x430;&#x435;&#x442; &#x437;&#x430; &#x43d;&#x430;&#x43f;&#x440;&#x430;&#x432;&#x43b;&#x435;&#x43d;&#x438;&#x435; &#x432;&#x440;&#x435;&#x43c;&#x435;&#x43d;&#x438;"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox1ActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

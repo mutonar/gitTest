@@ -8,6 +8,7 @@ package javaapplication5;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
@@ -28,6 +29,10 @@ public class JavaApplication5 extends javax.swing.JFrame {
     int[] columnSend = null;
     boolean trigTime = false; // тригер нахождения поля времени
     int posColumnTime; // позиция времени пока не знаю зачем
+    List<String[]> local_allRows; // тут будут все преобразованные данные из файла без имени и без лишних строк.
+    String[] massName; // Массив имен которые получим и передадим.
+    boolean inversTime = false; // тригер нахождения поля времени
+    
     // Листенер работает только в настройке элемента в графике
     //jList1.addListSelectionListener(new listSelectionListener());  
 
@@ -54,6 +59,7 @@ public class JavaApplication5 extends javax.swing.JFrame {
         jList1 = new JList<String>(listModel);
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -68,7 +74,7 @@ public class JavaApplication5 extends javax.swing.JFrame {
         });
 
         jButton2.setText("3.Построить график");
-        jButton2.setToolTipText("Нужно выбрать хотя бы один столбец.");
+        jButton2.setToolTipText("Нужно выбрать хотя бы один столбец. Навести на нужное место на графике и кликнуть мышью.");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -79,9 +85,18 @@ public class JavaApplication5 extends javax.swing.JFrame {
         jList1.setToolTipText("выбрать столбцы Ctrl + л.кнопка мыши");
         jScrollPane1.setViewportView(jList1);
 
-        jLabel1.setText("ver 0.1b");
+        jLabel1.setText("ver 0.2b");
 
-        jLabel2.setText("2.Выбрать параметры для просмотра");
+        jLabel2.setText("2.Выбрать параметры для просмотра (Ctrl+L.mouse)");
+        jLabel2.setToolTipText("выбрать столбцы Ctrl + л.кнопка мыши");
+
+        jCheckBox1.setText("4.Инвертировать время");
+        jCheckBox1.setToolTipText("Отвечает за направление времени");
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -92,13 +107,15 @@ public class JavaApplication5 extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButton1)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
-                .addGap(26, 26, 26))
+                    .addComponent(jButton2)
+                    .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,14 +124,19 @@ public class JavaApplication5 extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 486, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton2)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton1)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jCheckBox1)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -137,80 +159,102 @@ public class JavaApplication5 extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        // TODO add your handling code here:
+        inversTime = true;
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        //NewJFrameSimpleGraph_1 frame;
+
+        /*if (trigTime){ //изменяем масив если нашли время в выбраном
+            int[] tmpcolumnSend = new  int[columnSend.length-1]; // так по тому что на один меньше будет
+            int r = posColumnTime;
+            System.arraycopy( columnSend,0 ,columnSend, 0, columnSend.length); // Копируем полностью массив имени
+        }
+        */
+        /*
+        frame = new NewJFrameSimpleGraph_1(SAMPLE_CSV_FILE_PATH, columnSend);
+        //frame.setLayout(new BorderLayout());
+        //frame.add(ui, BorderLayout.CENTER);
+        //frame.pack();
+        //frame.setSize(800, 600); // Определенное разрешение
+        frame.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH); // В весь экран
+        frame.setDefaultLookAndFeelDecorated(true); // С такими параметрами завелось отображение 2 Фрейма на windows7
+
+        frame.setLocationRelativeTo(null); // position in the center of the screen
+        //frame.setDefaultCloseOperation(RunGraph.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(NewJFrameSimpleGraph_1.DISPOSE_ON_CLOSE);
+
+        //new RunGraph(SAMPLE_CSV_FILE_PATH).setVisible(true);
+        frame.setVisible(true);
+        */
+
+        //Запуск в потоке из этого класса
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    NewJFrameSimpleGraph_1 frame = new NewJFrameSimpleGraph_1(SAMPLE_CSV_FILE_PATH, columnSend, massName, local_allRows, inversTime); // передаем данные для построки файлов
+                    frame.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH); // В весь экран
+                    frame.setDefaultLookAndFeelDecorated(true); // С такими параметрами завелось отображение 2 Фрейма на windows7
+                    frame.setLocationRelativeTo(null); // position in the center of the screen
+                    frame.setVisible(true);
+                    //frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE); // закрыть полностью приложение
+                    frame.setDefaultCloseOperation(NewJFrameSimpleGraph_1.DISPOSE_ON_CLOSE); // закрытие окна
+                } catch (IOException ex) {
+                    Logger.getLogger(NewJFrameSimpleGraph_1.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        inversTime = false; //возвращаем иверсию в исходное значение, с этим надо поработать
+        /* } catch (IOException ex) {
+        JOptionPane.showMessageDialog(null, "This is even shorter");
+        // Logger.getLogger(JavaApplication5.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     @SuppressWarnings("empty-statement")
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         JFileChooser fileopen = new JFileChooser(System.getProperty("user.dir"));
-    //JFileChooser fileopen = new JFileChooser();
-        int ret = fileopen.showDialog(null, "Чтение файла с данными");                
+        //JFileChooser fileopen = new JFileChooser();
+        int ret = fileopen.showDialog(null, "Чтение файла с данными");
         if (ret == JFileChooser.APPROVE_OPTION) {
-        File file = fileopen.getSelectedFile();
-        SAMPLE_CSV_FILE_PATH = file.getPath();
+            File file = fileopen.getSelectedFile();
+            SAMPLE_CSV_FILE_PATH = file.getPath();
 
         }
-         try {
+        try {
             // инициализировать другое окно с классом в этом
-             //RunGraph frame = new RunGraph(SAMPLE_CSV_FILE_PATH);
-             //предадим из этого класса 
-            // int[] massColum = {1,2,3,4,5,6,7,8,9,10};  // какие номера столбцов рисуем просто по умолчаю вот это 
-              int[] massColum = {1,2,3};  // какие номера столбцов рисуем просто по умолчаю вот это 
-              
+            //RunGraph frame = new RunGraph(SAMPLE_CSV_FILE_PATH);
+            //предадим из этого класса
+            // int[] massColum = {1,2,3,4,5,6,7,8,9,10};  // какие номера столбцов рисуем просто по умолчаю вот это
+            int[] massColum = {1,2,3};  // какие номера столбцов рисуем просто по умолчаю вот это
+
             DataFromFile datafromfile = new DataFromFile(SAMPLE_CSV_FILE_PATH);
             datafromfile.generationData();
-            String[] massName = datafromfile.getlistNamedGraph(); // получаем массив имен
-             
-             // сначала очищаем список так как могло остаться от предыдущего открытия файла
-             listModel.clear(); 
-             //listModel.remove(3);// Это удаление элементов
-                  
-             for (int i = 0; i < massName.length; i++) {
-               if (massName[i].equals("Дата/Время")){  // не отображаем время
-                 trigTime = true;
-                 posColumnTime = i;
-                 System.out.print("find " + massName[i] );
-                // continue; // пока просто находим
-               }
-               listModel.addElement(massName[i]);
-             }
+            massName = datafromfile.getlistNamedGraph(); // получаем массив имен
+            local_allRows = datafromfile.getAllRows(); // Получаем преобразованное данные все что есть из файла
 
-            
-            
-                } catch (IOException ex) {
-                    Logger.getLogger(JavaApplication5.class.getName()).log(Level.SEVERE, null, ex);
-                   
+            // сначала очищаем список так как могло остаться от предыдущего открытия файла
+            listModel.clear();
+            //listModel.remove(3);// Это удаление элементов
 
-                }        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
-            NewJFrameSimpleGraph_1 frame;
-        try {
-            /*if (trigTime){ //изменяем масив если нашли время в выбраном
-                int[] tmpcolumnSend = new  int[columnSend.length-1]; // так по тому что на один меньше будет
-                int r = posColumnTime;
-              System.arraycopy( columnSend,0 ,columnSend, 0, columnSend.length); // Копируем полностью массив имени
+            for (int i = 0; i < massName.length; i++) {
+                if (massName[i].equals("Дата/Время")){  // не отображаем время
+                    trigTime = true;
+                    posColumnTime = i;
+                    System.out.print("find " + massName[i] );
+                    // continue; // пока просто находим
+                }
+                listModel.addElement(massName[i]);
             }
-            */
-            frame = new NewJFrameSimpleGraph_1(SAMPLE_CSV_FILE_PATH, columnSend);
-                        //frame.setLayout(new BorderLayout());
-            //frame.add(ui, BorderLayout.CENTER);
-            //frame.pack();
-            //frame.setSize(800, 600); // Определенное разрешение
-            frame.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH); // В весь экран
-            frame.setDefaultLookAndFeelDecorated(true); // С такими параметрами завелось отображение 2 Фрейма на windows7
 
-            frame.setLocationRelativeTo(null); // position in the center of the screen
-            //frame.setDefaultCloseOperation(RunGraph.DISPOSE_ON_CLOSE);
-            frame.setDefaultCloseOperation(NewJFrameSimpleGraph_1.DISPOSE_ON_CLOSE);
-                    
-            //new RunGraph(SAMPLE_CSV_FILE_PATH).setVisible(true);
-            frame.setVisible(true);
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, "This is even shorter");
-           // Logger.getLogger(JavaApplication5.class.getName()).log(Level.SEVERE, null, ex);
-        }
+            Logger.getLogger(JavaApplication5.class.getName()).log(Level.SEVERE, null, ex);
 
-    }//GEN-LAST:event_jButton2ActionPerformed
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -266,6 +310,7 @@ public class JavaApplication5 extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JList jList1;

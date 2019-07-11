@@ -82,26 +82,29 @@ public class DataFromFile {
     return listNamedGraph;
     }
     
-    //Возвращает пустые или уже урезанные данные
+    //Возвращает пустые или уже преобразованные данные
     List<String[]> getAllRows(){
     return allRows;
     }
     
       public static void main(String args[]) throws UnsupportedEncodingException, IOException {
-       DataFromFile datafromfile = new DataFromFile("C:\\Users\\Nazarov\\Documents\\NetBeansProjects\\JavaApplication5\\134_m-k_k-m - копия.txt");
+       // Это походу для тестов все
+       DataFromFile datafromfile = new DataFromFile("C:\\Users\\Nazarov\\Documents\\NetBeansProjects\\JavaApplication5\\AO_TREND_20190527_020929_hor.log");
        datafromfile.generationData();
        String[] massName = datafromfile.getlistNamedGraph();
        
-       for(int i=0; i<massName.length; ++i){System.out.println(massName[i]);
-       
-       }
+       for(int i=0; i<massName.length; ++i){System.out.println(massName[i]);}  // Перебираем имена
       
       List<String[]> local_allRows = datafromfile.getAllRows(); // Получаем преобразованное
-          System.out.println("After size Preobrazovannoe in main ->" + datafromfile.getAllRows().size());
+      System.out.println("After size Preobrazovannoe in main ->" + datafromfile.getAllRows().size());
       // пробежимся по данным
       for(String[] row : local_allRows){ // где то пролет с удалением
-        for(int i=0; i<row.length; ++i){System.out.print(row[i] + " ");
-        }
+       // for(int i=0; i<row.length; ++i){System.out.print(row[i] + " ");
+       // }
+          if(row[1].equals("")){ // так находим пустоту
+              System.out.print("Find Null --> " + row[1]);
+          }
+          
         System.out.println();
       }
       }
