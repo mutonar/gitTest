@@ -18,15 +18,19 @@ import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import static javaapplication5.RunGraph.listTime;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.jfree.chart.ChartFactory;
@@ -342,6 +346,8 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
           
       }
       */ 
+      
+       Set<String> listAddedN = new HashSet<String>();  // Лист для вносимых графиков(исключить повторение)
       //не видит какие столбцы мы передали
       for(int j=0; j<massColum.length; ++j){
       int stolb = massColum[j]; // Определенные столбцы
@@ -349,20 +355,36 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
       for (int ic=0; ic<colcolumn; ++ic ){ //перебираем нужные столбцы
          if (ic==stolb){ // нужный столбец      
          String nameG = nameColumn[ic];
+         
          //nameG = new String(nameG.getBytes("KOI8_R"));
          //nameG = new String(nameG.getBytes("Cp1251"));
 
-
+         // Переборка данных для анализа нет ли повторения, почему то это не работает
+         Iterator<String> i = listAddedN.iterator();
+         boolean accesaddGra = true;
+        while (i.hasNext()){
+                  String tmpelemL = i.next();
+                  System.out.println(tmpelemL);
+                if (tmpelemL.equals(nameG)){
+                    JOptionPane.showMessageDialog(null, "Есть совпадения столбцов, следующий " + nameG + " будет исключен"); // Сообщение о повторении солбцов
+                    accesaddGra = false;
+                }
+              }
+        // Тригер проверки на совпадение
+        if (!accesaddGra){continue;}
+        
+        listAddedN.add(nameG); // а тут уже в список добавляем после проверки если нет
+              
          XYSeries tmp = new XYSeries(nameG); // вот тут как то надо смотреть списки имен
          tmp.setDescription(nameG);// вносим описание это тмя что бы вывести в поле в дальнейшем
          
          int xi =0;
          for(String[] row : allRows){
 
-                   if (xi<=3){ // пропуск трех строк которые идут первые (Архив сигналов) --- и тд
-                   ++xi;
-                 continue;
-             }
+           //        if (xi<=3){ // пропуск трех строк которые идут первые (Архив сигналов) --- и тд
+           //        ++xi;
+           //      continue;
+           //  }
         if (row.length > ic && row[ic] != null){ // Проверяем на пустоту  элемента массива
                // System.out.println(row[ic]);
                 String item = row[ic];
@@ -393,6 +415,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
       }
          
       xyserColl.addSeries(tmp); // Добавляем в коллекцию график // если одинаковое вхождение надо это обралить.
+      break; // если нашли нужные столбец и не нужно еще раз прогонять
       } else continue;// if проверки столбца
     }
     } 
