@@ -32,6 +32,8 @@ public class JavaApplication5 extends javax.swing.JFrame {
     List<String[]> local_allRows; // тут будут все преобразованные данные из файла без имени и без лишних строк.
     String[] massName; // Массив имен которые получим и передадим.
     boolean inversTime = false; // тригер нахождения поля времени
+    boolean viewLegend = true; // тригер нахождения поля времени
+
     
     // Листенер работает только в настройке элемента в графике
     //jList1.addListSelectionListener(new listSelectionListener());  
@@ -60,6 +62,7 @@ public class JavaApplication5 extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
+        jCheckBox2 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -98,6 +101,16 @@ public class JavaApplication5 extends javax.swing.JFrame {
             }
         });
 
+        jCheckBox2.setSelected(true);
+        jCheckBox2.setText("5. Показать легенду");
+        jCheckBox2.setToolTipText("не выводить  описание цвета и название графиков");
+        jCheckBox2.setActionCommand("");
+        jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -114,7 +127,8 @@ public class JavaApplication5 extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton2)
-                    .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCheckBox2))
                 .addContainerGap(42, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -136,6 +150,8 @@ public class JavaApplication5 extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jCheckBox1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jCheckBox2)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
@@ -192,10 +208,15 @@ public class JavaApplication5 extends javax.swing.JFrame {
         */
 
         //Запуск в потоке из этого класса
+        
+        // Эта порнота для передачи в поток инверсного и возвращение
+        boolean tmpinversTime = inversTime;
+        inversTime = false; // Как и был
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    NewJFrameSimpleGraph_1 frame = new NewJFrameSimpleGraph_1(SAMPLE_CSV_FILE_PATH, columnSend, massName, local_allRows, inversTime); // передаем данные для построки файлов
+                    NewJFrameSimpleGraph_1 frame = new NewJFrameSimpleGraph_1(SAMPLE_CSV_FILE_PATH, columnSend, massName, local_allRows, tmpinversTime, viewLegend); // передаем данные для построки файлов
                     frame.setExtendedState(javax.swing.JFrame.MAXIMIZED_BOTH); // В весь экран
                     frame.setDefaultLookAndFeelDecorated(true); // С такими параметрами завелось отображение 2 Фрейма на windows7
                     frame.setLocationRelativeTo(null); // position in the center of the screen
@@ -207,7 +228,8 @@ public class JavaApplication5 extends javax.swing.JFrame {
                 }
             }
         });
-        inversTime = false; //возвращаем иверсию в исходное значение, с этим надо поработать
+        //inversTime = false; //возвращаем иверсию в исходное значение, с этим надо поработать
+        
         /* } catch (IOException ex) {
         JOptionPane.showMessageDialog(null, "This is even shorter");
         // Logger.getLogger(JavaApplication5.class.getName()).log(Level.SEVERE, null, ex);
@@ -255,6 +277,11 @@ public class JavaApplication5 extends javax.swing.JFrame {
 
         }        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
+        // TODO add your handling code here:
+        viewLegend = false;
+    }//GEN-LAST:event_jCheckBox2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -311,6 +338,7 @@ public class JavaApplication5 extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JList jList1;

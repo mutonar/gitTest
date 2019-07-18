@@ -68,6 +68,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jButton2" min="-2" max="-2" attributes="0"/>
                       <Component id="jCheckBox1" min="-2" pref="159" max="-2" attributes="0"/>
+                      <Component id="jCheckBox2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="42" max="32767" attributes="0"/>
               </Group>
@@ -95,6 +96,8 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace type="separate" max="-2" attributes="0"/>
+                          <Component id="jCheckBox2" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -160,6 +163,17 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox1ActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="jCheckBox2">
+          <Properties>
+            <Property name="selected" type="boolean" value="true"/>
+            <Property name="text" type="java.lang.String" value="5. &#x41f;&#x43e;&#x43a;&#x430;&#x437;&#x430;&#x442;&#x44c; &#x43b;&#x435;&#x433;&#x435;&#x43d;&#x434;&#x443;"/>
+            <Property name="toolTipText" type="java.lang.String" value="&#x43d;&#x435; &#x432;&#x44b;&#x432;&#x43e;&#x434;&#x438;&#x442;&#x44c;  &#x43e;&#x43f;&#x438;&#x441;&#x430;&#x43d;&#x438;&#x435; &#x446;&#x432;&#x435;&#x442;&#x430; &#x438; &#x43d;&#x430;&#x437;&#x432;&#x430;&#x43d;&#x438;&#x435; &#x433;&#x440;&#x430;&#x444;&#x438;&#x43a;&#x43e;&#x432;"/>
+            <Property name="actionCommand" type="java.lang.String" value=""/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBox2ActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

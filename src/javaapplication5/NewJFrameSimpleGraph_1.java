@@ -45,6 +45,7 @@ import org.jfree.chart.panel.CrosshairOverlay;
 import org.jfree.chart.plot.Crosshair;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.general.DatasetUtilities;
 import org.jfree.data.time.Millisecond;
@@ -88,13 +89,15 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     int[] massColum = {1,2,3,4,5,6,7,8,9,10};  // какие номера столбцов рисуем просто по умолчаю вот это
     String[] massName; // Имена полученные в конструкторе
     boolean inversTime = false;
+    boolean viewLegend = true;
 
     //TimeSeriesCollection  xyDataset = (TimeSeriesCollection ) createDataset(); // создадим отдельным элементом для перебора в итератор
    
     /**
      * Creates new form NewJFrame
      */
-     public NewJFrameSimpleGraph_1(String SAMPLE_CSV_FILE_PATH, int[] massColum ,String[] massName , List<String[]> allRows, boolean inversTime) throws FileNotFoundException, IOException{ 
+     public NewJFrameSimpleGraph_1(String SAMPLE_CSV_FILE_PATH, int[] massColum ,String[] massName , List<String[]> allRows, boolean inversTime, boolean viewLegend) throws FileNotFoundException, IOException{ 
+      this.viewLegend = viewLegend;
       this.inversTime = inversTime;
       this.massName = massName;
       this.allRows = allRows; // Тут внес последнее это
@@ -178,7 +181,11 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
 
     private JFreeChart createChart(XYDataset dataset) {
         JFreeChart chart = ChartFactory.createXYLineChart("Окно просмотра графиков",  // Название графика
-                "X1", "Y", dataset);  // тут названия систем координат
+              //  "X1", "Y", dataset, PlotOrientation.VERTICAL, false, false, false);  // Первое труе убирает подписи
+                  "X1", "Y", dataset, PlotOrientation.VERTICAL, viewLegend, false, false);  // Первое труе убирает подписи
+               //JFreeChart chart = ChartFactory.createXYLineChart("Окно просмотра графиков", null, null, dataset); // убрать название осей
+        //PlotOrientation.HORIZONTAL, //это направление графиков
+        //true, true, false);  // тут названия систем координат
         return chart;
     }
     
@@ -413,7 +420,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
 
          ++xi;
       }
-         
+  
       xyserColl.addSeries(tmp); // Добавляем в коллекцию график // если одинаковое вхождение надо это обралить.
       break; // если нашли нужные столбец и не нужно еще раз прогонять
       } else continue;// if проверки столбца
@@ -602,8 +609,9 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel2 = new javax.swing.JPanel();
+        jSplitPane2 = new javax.swing.JSplitPane();
         jPanel1 = createContent();
-        jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -614,30 +622,51 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 629, Short.MAX_VALUE)
+            .addGap(0, 749, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
+        jSplitPane2.setLeftComponent(jPanel1);
+
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jSplitPane2.setRightComponent(jTextArea1);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 927, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 431, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -689,7 +718,8 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
 }
