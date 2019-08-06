@@ -88,7 +88,7 @@ public class JavaApplication5 extends javax.swing.JFrame {
         jList1.setToolTipText("выбрать столбцы Ctrl + л.кнопка мыши");
         jScrollPane1.setViewportView(jList1);
 
-        jLabel1.setText("ver 0.2b");
+        jLabel1.setText("ver 0.45b");
 
         jLabel2.setText("2.Выбрать параметры для просмотра (Ctrl+L.mouse)");
         jLabel2.setToolTipText("выбрать столбцы Ctrl + л.кнопка мыши");

@@ -295,6 +295,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
      allRows.add(0, listName);
      */
      if (inversTime){
+         Collections.reverse(listTime); // 
       Collections.reverse(allRows); // если надо инвертируем список с именами трудность
      }
      
@@ -398,7 +399,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
              if (item.equals("false") || item.equals("true") || item.equals("FALSE") || item.equals("TRUE") || item.equals(null) || item.equals("")){ // ищет false true еще надо время
                // System.out.println("Find True false");
                 if (item.equals("false") || item.equals("FALSE") || item.equals(null) || item.equals("")){tmp.add(xi, Float.valueOf(0));}
-                if( item.equals("true") || item.equals("true")){tmp.add(xi, Float.valueOf(1));}
+                if( item.equals("true") || item.equals("TRUE")){tmp.add(xi, Float.valueOf(100));} // Изменил  на 100 что бы видно на графиках было
                 
              }else{
                               // регулярка для времени
@@ -612,11 +613,10 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         jPanel2 = new javax.swing.JPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         jPanel1 = createContent();
+        jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setAutoscrolls(true);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -633,7 +633,9 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
-        jSplitPane2.setRightComponent(jTextArea1);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        jSplitPane2.setRightComponent(jScrollPane1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -641,14 +643,14 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 927, Short.MAX_VALUE)
+                .addComponent(jSplitPane2)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 431, Short.MAX_VALUE)
+                .addComponent(jSplitPane2)
                 .addContainerGap())
         );
 
@@ -719,6 +721,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
