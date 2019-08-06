@@ -15,16 +15,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -32,7 +28,6 @@ import java.util.regex.Pattern;
 import static javaapplication5.RunGraph.listTime;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.jfree.chart.ChartFactory;
@@ -44,14 +39,15 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.entity.ChartEntity;
 import org.jfree.chart.entity.XYItemEntity;
-import org.jfree.chart.labels.IntervalCategoryToolTipGenerator;
+import org.jfree.chart.labels.StandardXYToolTipGenerator;
 import org.jfree.chart.panel.CrosshairOverlay;
 import org.jfree.chart.plot.Crosshair;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.category.GanttRenderer;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
+import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.general.DatasetUtilities;
 import org.jfree.data.time.Millisecond;
 import org.jfree.data.time.TimeSeries;
@@ -62,7 +58,6 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleEdge;
-import org.jfree.ui.RectangleInsets;
 import org.jfree.util.ShapeUtilities;
 
 /*
@@ -75,7 +70,7 @@ import org.jfree.util.ShapeUtilities;
  *
  * @author nazarov
  */
-public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartMouseListener {
+public class NewJFrameSimpleGraph_XYplot extends javax.swing.JFrame implements ChartMouseListener {
     
     //private static final String SAMPLE_CSV_FILE_PATH = "AO_TREND_20190527_020929.log";
     //private static String SAMPLE_CSV_FILE_PATH = "C:\\Users\\Nazarov\\Desktop\\Info_script_file_work\\построить графики\\135_k-m_m-k.txt";
@@ -89,57 +84,42 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     private Crosshair xCrosshair;
 
     private Crosshair yCrosshair;
-    XYSeriesCollection  xyDataset;
-    List<String[]> allRows; // главный лист всех даных обрабатываемых и отображаемых
-    String[] listNamedGraph = null; // Список таблиц
-    int[] massColum = {1,2,3,4,5,6,7,8,9,10};  // какие номера столбцов рисуем просто по умолчаю вот это
-    String[] massName; // Имена полученные в конструкторе
-    boolean inversTime = false;
-    boolean viewLegend = true;
-    XYPlot plot = new XYPlot();
-
+    //XYSeriesCollection  xyDataset;
+     XYPlot plot = new XYPlot();
+     JFreeChart chart; // тоже глобальный что бы обращаться из Листенеров 
+//    FastXYPlot plot = new FastXYPlot();
     //TimeSeriesCollection  xyDataset = (TimeSeriesCollection ) createDataset(); // создадим отдельным элементом для перебора в итератор
    
     /**
      * Creates new form NewJFrame
      */
-     public NewJFrameSimpleGraph_1(String SAMPLE_CSV_FILE_PATH, int[] massColum ,String[] massName , List<String[]> allRows, boolean inversTime, boolean viewLegend) throws FileNotFoundException, IOException{ 
-      this.viewLegend = viewLegend;
-      this.inversTime = inversTime;
-      this.massName = massName;
-      this.allRows = allRows; // Тут внес последнее это
-      this.massColum = massColum;
+     public NewJFrameSimpleGraph_XYplot(String SAMPLE_CSV_FILE_PATH) throws FileNotFoundException, IOException{ // вот так инициализация проходит
       this.SAMPLE_CSV_FILE_PATH = SAMPLE_CSV_FILE_PATH;
         //       super(s);
         //JPanel jpanel = createDemoPanel();
         //jpanel.setPreferredSize(new Dimension(640, 480));
         //add(jpanel);
-        //xyDataset = (XYSeriesCollection ) constructorGraph(massColum); // Инициализация тоже должна быть в конструкторе это была рабочая версия
-        plot = constructorGraph(massColum); // вот это и есть две разные шкалы в одном 
+        
+        // Тут коллекция крафиков 
+       // xyDataset = (XYSeriesCollection ) constructorGraph(); // Инициализация тоже должна быть в конструкторе
+        // А это новое
+        plot = constructorGraph(); // вот это похоже и есть две разные шкалы в одном 
+
         initComponents();
     }
-    public NewJFrameSimpleGraph_1() throws FileNotFoundException, IOException{ 
+    public NewJFrameSimpleGraph_XYplot() throws FileNotFoundException, IOException{ // вот так инициализация проходит
          //       super(s);
         //JPanel jpanel = createDemoPanel();
         //jpanel.setPreferredSize(new Dimension(640, 480));
         //add(jpanel);
         initComponents();
     }
-    
-    //Отдельная инициация компонентов
-    public void iСNewJFrameSimpleGraph() { 
-         //       super(s);
-        //JPanel jpanel = createDemoPanel();
-        //jpanel.setPreferredSize(new Dimension(640, 480));
-        //add(jpanel);
-        initComponents();
-    }
-  /*
+  
         //этот метод не реализуется
-        public JPanel createDemoPanel() throws IOException {
+ /*       public JPanel createDemoPanel() throws IOException {
         JFreeChart jfreechart = ChartFactory.createScatterPlot(
            // "Scatter Plot Demo", "X", "Y", samplexydataset2(),
-             "Scatter Plot Demo", "X", "Y", constructorGraph(massColum),
+             "Scatter Plot Demo", "X", "Y", constructorGraph(),
             PlotOrientation.VERTICAL, true, true, false);
         Shape cross = ShapeUtilities.createDiagonalCross(3, 1); // Крестики
         XYPlot xyPlot = (XYPlot) jfreechart.getPlot();
@@ -150,7 +130,8 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
        // renderer.setSeriesPaint(0, Color.red);
         return new ChartPanel(jfreechart);
     }
-
+*/
+    
     private XYDataset samplexydataset2() {
         int cols = 15;
         int rows = 13;
@@ -168,17 +149,18 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         xySeriesCollection.addSeries(series);
         return xySeriesCollection;
     }
-    */
+    
      private JPanel createContent() {
         //JFreeChart chart = createChart(createDataset());
        
-        //JFreeChart chart = createChart(xyDataset); // тут добавляем сами шкалы и прочее в график
-         // прошлая chart
-         /*{
-        JFreeChart chart = createChart(xyDataset); // тут добавляем сами шкалы и прочее в график
+        //JFreeChart chart = createChart(xyDataset); //  это основное что работало
+         chart = createChart(plot); //  это основное что работало
+         //new JFreeChart("MyPlot", getFont(), plot, true);
         this.chartPanel = new ChartPanel(chart);
+        this.chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        this.chartPanel.setBackground(Color.white);  
         this.chartPanel.addChartMouseListener(this);
-        CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
+       /* CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
         this.xCrosshair = new Crosshair(Double.NaN, Color.RED, new BasicStroke(0f)); // Эта отоброжается
         this.xCrosshair.setLabelVisible(true);
         
@@ -187,37 +169,15 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         crosshairOverlay.addDomainCrosshair(xCrosshair);
         crosshairOverlay.addRangeCrosshair(yCrosshair);
         chartPanel.addOverlay(crosshairOverlay);
-        }*/
-         { // Это работает с plot но нет работы с мышью и прочим =(
-        JFreeChart  chart = createChart(plot); //  это основное что работало
-        this.chartPanel = new ChartPanel(chart);
-        this.chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-        this.chartPanel.setBackground(Color.white);  
-        this.chartPanel.addChartMouseListener(this);
-        
-        CrosshairOverlay crosshairOverlay = new CrosshairOverlay();
-        this.xCrosshair = new Crosshair(Double.NaN, Color.RED, new BasicStroke(0f)); // Эта отоброжается
-        this.xCrosshair.setLabelVisible(true);
-        this.yCrosshair = new Crosshair(Double.NaN, Color.GRAY, new BasicStroke(0f));
-        this.yCrosshair.setLabelVisible(true);
-        crosshairOverlay.addDomainCrosshair(xCrosshair);
-        crosshairOverlay.addRangeCrosshair(yCrosshair);    
-        //chartPanel.addOverlay(crosshairOverlay); // с этим не работает но в изначальном пашет
-         }
+        */
         return chartPanel;
     }
 
-    // это для XYDataset
-    private JFreeChart createChart(XYDataset dataset) {
-        JFreeChart chart = ChartFactory.createXYLineChart("Окно просмотра графиков",  // Название графика
-              //  "X1", "Y", dataset, PlotOrientation.VERTICAL, false, false, false);  // Первое труе убирает подписи
-                  "X1", "Y", dataset, PlotOrientation.VERTICAL, viewLegend, false, false);  // Первое труе убирает подписи
-               //JFreeChart chart = ChartFactory.createXYLineChart("Окно просмотра графиков", null, null, dataset); // убрать название осей
-        //PlotOrientation.HORIZONTAL, //это направление графиков
-        //true, true, false);  // тут названия систем координат
+    /*private JFreeChart createChart(XYDataset dataset) {
+        JFreeChart chart = ChartFactory.createXYLineChart("Crosshair Demo", 
+                "X", "Y", dataset);
         return chart;
-    }
-    
+    }*/
     // тут создадим график на основе XYPlot
     private JFreeChart createChart( XYPlot plot) {
         JFreeChart chart = new JFreeChart("MyPlot", getFont(), plot, false);
@@ -246,84 +206,20 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         return dataset;
     }
     
-    // Чтение файла с данными
-    // получаем имена столбцов и может быть формируем правильный arraylist массивов данных
-    public String[] getNamedGraph() throws UnsupportedEncodingException, FileNotFoundException, IOException{
-      //  InputStreamReader reader1 = new InputStreamReader(new FileInputStream(SAMPLE_CSV_FILE_PATH), "UTF8");  // тут отличия от оригинала так как нужно декодировать
-       // CSVReader reader = new CSVReader(reader1, '\t', '"');
-       
-        // this.allRows = reader.readAll(); // вот тут я просмотрел
-        
-        int strN =0; // Переменная для определнеие строки имени
-        for(String[] row : allRows){ 
-            if (row.length <=1){ // проверяем есть ли хоть два столбца
-              ++strN;
-              continue;}
-            else {
-              boolean acces = false;
-              for(int i=0; i<row.length; ++i) // пробегаем по строке 
-              {
-                  if (checkString(row[i])) acces = false; // Определяем числа ли это если хоть один цыфры то пропуск
-                  else acces = true;
-              }
-              if (acces){
-              listNamedGraph = new String[row.length]; // создаем массив такой же длинны как row
-              System.arraycopy( row,0 ,listNamedGraph, 0, row.length); // Копируем полностью массив имени
-              break;
-              }
-              ++strN; // Конечное число от куда начинаются данные
-              } 
-        }
-       // System.out.println("Before size ->" + allRows.size());
-        // Удаляем ненужные данные вместе с именами список выше их есть
-//        for(int i=0; i<strN; ++i){allRows.remove(i);} // c обрезкой какая то лажа решено в файле DataFromFile
-       // System.out.println("After size ->" + allRows.size());
-       // System.out.println(strN);
-      //  System.out.println(listNamedGraph[0]);
-    return listNamedGraph;}
     
-    //Фукция проверки строка ли это
-    public boolean checkString(String string) {
-        try {
-            Double.parseDouble(string);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
+    // наши графики из другого проекта
+    private XYPlot constructorGraph() throws FileNotFoundException, IOException{
     
-    //Возвращает список с названиями столбцов
-    String[] getlistNamedGraph(){
-    return listNamedGraph;
-    }
-    
-    // устанавливаем что рисуем
-    void setMassColum(int[] massColum ){
-      //this.massColum =  = new int[massColum.length]; // создаем массив такой же длинны как row
-    System.arraycopy( massColum,0 ,listNamedGraph, 0, massColum.length); // Копируем полностью массив имени
-    }
-    
-    // наши графики из другого проекта // Уже более-менее правильно
-    //private XYDataset constructorGraph( int[] massColum ) throws FileNotFoundException, IOException{
-    private XYPlot constructorGraph(int[] massColum) throws FileNotFoundException, IOException{
-
-    getNamedGraph();
-    this.massColum = massColum;  // какие столбцы рисуем при вызове
-     // какие колонки используем дл рисования 0 это время его не дергаем
-    
-  //  InputStreamReader reader1 = new InputStreamReader(new FileInputStream(SAMPLE_CSV_FILE_PATH), "UTF8");  // тут отличия от оригинала так как нужно декодировать
-   // CSVReader reader = new CSVReader(reader1, '\t', '"');
-    //List<String[]> allRows = reader.readAll();
+        InputStreamReader reader1 = new InputStreamReader(new FileInputStream(SAMPLE_CSV_FILE_PATH), "UTF8");  // тут отличия от оригинала так как нужно декодировать
+        CSVReader reader = new CSVReader(reader1, '\t', '"');
+        List<String[]> allRows = reader.readAll();
      
     
 
-     int colcolumn = 0; // тут не верно это все данные тут вообще херня
+     int colcolumn = 0; // тут не верно это все данные
      int strColumn =0; // Строка с именами
      int propusk = 0;// Сколько строк пропускаем с начала изначально 4
      int tmpColumn =0; 
-     
-     /* это хитрый ход который теперь не нужен
-     
      // получить масив имен что бы вставить в инвертированный файл
      String[] listName = allRows.get(strColumn);
      //Удаляем лист элемент с именами
@@ -332,15 +228,8 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
      Collections.reverse(allRows); // если надо инвертируем список с именами трудность
      //и добавляем имена
      allRows.add(0, listName);
-     */
-     if (inversTime){
-         Collections.reverse(listTime); // 
-      Collections.reverse(allRows); // если надо инвертируем список с именами трудность
-     }
      
-     String[] nameColumn = massName; // массив имен
-     //тоже теперь не надо
-     /*
+     String[] nameColumn = null; // массив имен
      for(String[] row : allRows){ // выводим все даные
       if (row.length > colcolumn) colcolumn = row.length ;
         //System.out.println(row.length); // длина массива
@@ -350,20 +239,14 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         }
         ++tmpColumn;
      }
-    */
-     // тут упрощенно что бы не накосячить мохоже максимальная длинна
-     for(String[] row : allRows){ // выводим все даные
-      if (row.length > colcolumn) colcolumn = row.length ;
-        ++tmpColumn;
-     }
-     
+    
        // Создание массива времени   
       int xe =0;
       for(String[] row : allRows){
-      /*  if (xe<=propusk){ // пропуск трех строк которые идут первые (Архив сигналов) --- и тд
+        if (xe<=propusk){ // пропуск трех строк которые идут первые (Архив сигналов) --- и тд
         ++xe;
         continue;
-        }*/
+        }
         Pattern pattern1 = Pattern.compile("^(.*) (.*)$"); 
         Matcher matcher1 = pattern1.matcher(row[0]);
         String date =""; // годы месяцы число
@@ -371,14 +254,14 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         if (matcher1.matches()){ 
         date = matcher1.group(1); // годы месяцы число
         time = matcher1.group(2); // время
-        //System.out.println(time);
        }
         listTime.add(time);
       }
       // тут создаем коллекцию из массива графиков по количеству столбцов
-      XYSeriesCollection xyserColl = new XYSeriesCollection();
+      //XYSeriesCollection xyserColl = new XYSeriesCollection();
+ 
       //int[] massColum = {5,6,7,8,9,10,11,15,70,100,201}; // для дальнейшего формирования массива
-      
+      int[] massColum = {1,2,3,4,5,6,7}; // какие колонки используем дл рисования
     /*
       // Тут по фору создаем массив из количества имен что то не то с ним
       int i3 =0;
@@ -394,58 +277,38 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
       }
       */ 
       
-       Set<String> listAddedN = new HashSet<String>();  // Лист для вносимых графиков(исключить повторение)
-      //не видит какие столбцы мы передали
+      
       for(int j=0; j<massColum.length; ++j){
       int stolb = massColum[j]; // Определенные столбцы
-      
+
       for (int ic=0; ic<colcolumn; ++ic ){ //перебираем нужные столбцы
-         if (ic==stolb){ // нужный столбец      
+         if (ic==stolb){ // нужный столбец и столбец времени      
          String nameG = nameColumn[ic];
-         
          //nameG = new String(nameG.getBytes("KOI8_R"));
          //nameG = new String(nameG.getBytes("Cp1251"));
 
-         // Переборка данных для анализа нет ли повторения, почему то это не работает
-         Iterator<String> i = listAddedN.iterator();
-         boolean accesaddGra = true;
-        while (i.hasNext()){
-                  String tmpelemL = i.next();
-                  System.out.println(tmpelemL);
-                if (tmpelemL.equals(nameG)){
-                    JOptionPane.showMessageDialog(null, "Есть совпадения столбцов, следующий " + nameG + " будет исключен"); // Сообщение о повторении солбцов
-                    accesaddGra = false;
-                }
-              }
-        // Тригер проверки на совпадение
-        if (!accesaddGra){continue;}
-        
-        listAddedN.add(nameG); // а тут уже в список добавляем после проверки если нет
-              
-         XYSeries tmp = new XYSeries(nameG); // вот тут как то надо смотреть списки имен
+
+         XYSeries tmp = new XYSeries(nameG);
          tmp.setDescription(nameG);// вносим описание это тмя что бы вывести в поле в дальнейшем
          
          int xi =0;
          for(String[] row : allRows){
 
-           //        if (xi<=3){ // пропуск трех строк которые идут первые (Архив сигналов) --- и тд
-           //        ++xi;
-           //      continue;
-           //  }
+                   if (xi<=3){ // пропуск трех строк которые идут первые (Архив сигналов) --- и тд
+                   ++xi;
+                 continue;
+             }
         if (row.length > ic && row[ic] != null){ // Проверяем на пустоту  элемента массива
                // System.out.println(row[ic]);
                 String item = row[ic];
-             if (item.equals("false") || item.equals("true") || item.equals("FALSE") || item.equals("TRUE") || item.equals(null) || item.equals("")){ // ищет false true еще надо время
-               // System.out.println("Find True false");
-                if (item.equals("false") || item.equals("FALSE") || item.equals(null) || item.equals("")){tmp.add(xi, Float.valueOf(0));}
-                if( item.equals("true") || item.equals("TRUE")){tmp.add(xi, Float.valueOf(100));} // Изменил  на 100 что бы видно на графиках было
-                
+             if (item.equals("false") || item.equals("true") || item.equals(null)){ // ищет false true еще надо время
+                System.out.println("Find True false");  
              }else{
                               // регулярка для времени
                  Pattern pattern1 = Pattern.compile("^(.*) (.*)$"); 
                  Matcher matcher1 = pattern1.matcher(item);
                  String date =""; // годы месяцы число
-                 String time = ""; // время
+                  String time = ""; // время
                  if (matcher1.matches()){ 
                   date = matcher1.group(1); // годы месяцы число
                   time = matcher1.group(2); // время
@@ -460,11 +323,10 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
 
          ++xi;
       }
-  
-      xyserColl.addSeries(tmp); // Добавляем в коллекцию график // если одинаковое вхождение надо это обралить.
-      // тут пробуем переделать блок для Plot
-      {
-         // Это отрисовка
+        // тут создаем коллекцию из массива графиков по количеству столбцов
+        XYSeriesCollection xyserColl = new XYSeriesCollection();
+        xyserColl.addSeries(tmp); // Добавляем в коллекцию график
+        // Это отрисовка
         final StandardXYItemRenderer renderer2 = new StandardXYItemRenderer();
         renderer2.setSeriesPaint(0, Color.black);
          // Каждую коллекцию добавляем отдельно
@@ -472,21 +334,19 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         plot.setRenderer(ic, renderer2); // подпись
         plot.setRangeAxis(ic, new NumberAxis(nameG));
         plot.mapDatasetToRangeAxis(ic, ic);
-         }
-      break; // если нашли нужные столбец и не нужно еще раз прогонять
+//        XYItemRenderer renderer = plot.getRenderer();
+  //      renderer.setSeriesPaint(0, Color.BLUE);
+        
       } else continue;// if проверки столбца
     }
     } 
-    //return xyserColl; // это возвращали до этого
-      
-     plot.setDomainAxis(new NumberAxis("X Axis")); // это как называется X  
-    
-    plot.setDomainCrosshairVisible(true);
-   // plot.setRangeCrosshairVisible(true);
-     //GanttRenderer r = (GanttRenderer) plot.getRenderer();
-    // r.setBaseToolTipGenerator(new IntervalCategoryToolTipGenerator(
-    //    "{0}, {1}: {3} - {4}", DateFormat.getDateInstance()));
+    //return xyserColl;
+//    XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) plot.getRenderer();
+  //  renderer.setDrawSeriesLineAsPath(true);
+
+     plot.setDomainAxis(new NumberAxis("X Axis")); // это как называется X   
      return plot;
+      
     }
     /*
         // тут временные массив не победил его
@@ -508,39 +368,27 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     }
 */
     @Override
-    public void chartMouseClicked(ChartMouseEvent event) {
-        
-      
-        // тут похоже реализовавает движение по графику
+    public void chartMouseClicked(ChartMouseEvent cme) {
+                // тут похоже реализовавает движение по графику
         Rectangle2D dataArea = this.chartPanel.getScreenDataArea();
-        JFreeChart chart = event.getChart();
-        XYPlot plot = (XYPlot) chart.getPlot();
-        // узнаем что такое XYPlot
-         
+        JFreeChart chart = cme.getChart();
         
-        ValueAxis xAxis = plot.getDomainAxis();
-        double x = xAxis.java2DToValue(event.getTrigger().getX(), dataArea, RectangleEdge.BOTTOM);
-        double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x); // тут похоже находим координаты нашего y
+        int nymElem = plot.getDatasetCount();
+        System.out.println( nymElem);
         
-        this.xCrosshair.setValue(x); // это реализация движения шкалы по x y внизу
-      //  this.yCrosshair.setValue(y);
+         ValueAxis xAxis = plot.getDomainAxis();
+        double x = xAxis.java2DToValue(cme.getTrigger().getX(), dataArea, RectangleEdge.BOTTOM);
+        double y = DatasetUtilities.findYValue(plot.getDataset(2), 0, x); // тут похоже находим координаты нашего y
         
+        //this.xCrosshair.setValue(x); // это реализация движения шкалы по x y внизу
         
-       //данные получаем с графиков для обычных
-            /*  List<XYSeries> werries = xyDataset.getSeries();
-              ListIterator<XYSeries> iterator = werries.listIterator(); 
-              while (iterator.hasNext()) { 
-              double yinterpol = interpolate(iterator.next(), x);  // с Интерполяцией трудность
-              System.out.println("Item interpolicia = " + yinterpol );
-              }
-              */
-              //данные получаем с графиков пробуем для времени
-              List<XYSeries> werries = xyDataset.getSeries();
-              ListIterator<XYSeries> iterator = werries.listIterator(); 
-              String toFieadTXT = "";
-              String curentTime = "";
-              while (iterator.hasNext()) { 
-                  XYSeries tmpElemXY = iterator.next();
+        for (int i=1; i<nymElem; i++){ // Почему с 1 пока не пойму
+          XYSeriesCollection tmp = (XYSeriesCollection) plot.getDataset(i); // Так получили 2 график
+           ListIterator<XYSeries> iterator = tmp.getSeries().listIterator();
+                String toFieadTXT = "";
+                String curentTime = "";
+                while (iterator.hasNext()) {  // перебираем все елементы хоть он у нас и один
+                    XYSeries tmpElemXY = iterator.next();
                   String  XYDescription = tmpElemXY.getDescription();// получить описание
                 new dataFromGraph(tmpElemXY, x); // передаем данные в статический клас вместо метода Интерполяции
                 dataFromGraph.setItem();
@@ -548,26 +396,65 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
                 curentTime = listTime.get(iTime);
                 String formattedDouble = new DecimalFormat("#0.000000").format(dataFromGraph.getItemData());
                 toFieadTXT += XYDescription + "->" + formattedDouble +"\n" ;
-              }
-              toFieadTXT += "\n" + "Time graph --> " + curentTime + "\n";  
-       /* try {
+                }
+                toFieadTXT += "\n" + "Time graph --> " + curentTime + "\n";  
+         
+        try {
             toFieadTXT = new String(toFieadTXT.getBytes("Cp1251"));
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(JavaApplication5.class.getName()).log(Level.SEVERE, null, ex);
         }
-              */
-   
+               
               jTextArea1.setText(toFieadTXT);
+        }
+              //List<XYSeries> werries = xyDataset.getSeries();
+              //ListIterator<XYSeries> iterator = werries.listIterator(); 
+              //System.out.println(tmpElemXY.getDescription());
+
+       /* 
+        Rectangle2D dataArea = this.chartPanel.getScreenDataArea();
+        JFreeChart chart = cme.getChart();
+        XYPlot plot = (XYPlot) chart.getPlot();
         
+            Point2D  po = chartPanel.translateScreenToJava2D(cme.getTrigger().getPoint()); // даем точки нажатия клафиши мыши
+            
+            Rectangle2D plotArea = chartPanel.getScreenDataArea();
+            plot = (XYPlot) chart.getPlot(); 
+            ValueAxis xAxis = plot.getDomainAxis();
+
+            double x = xAxis.java2DToValue(cme.getTrigger().getX(), dataArea, RectangleEdge.BOTTOM);
+            float chartX = (float) plot.getDomainAxis().java2DToValue(po.getX(), plotArea, plot.getDomainAxisEdge());  // тут различается получение данных
+            float charty = (float) plot.getDomainAxis().java2DToValue(po.getY(), plotArea, plot.getDomainAxisEdge());  // тут различается получение данных
+            
+            System.out.println(x + "  " + chartX + "  " + charty);
+            
+            // это почти что нужно. надо как то по иксу по Y пройти и получим значение
+           
+            ChartEntity ce = cme.getEntity();
+            System.out.println(ce.toString());
+            
+                XYItemEntity e2 = new XYItemEntity(
+                  plotArea,
+                new TimeSeriesCollection(), 1, 9, "ToolTip", "URL"
+                );
+        */
+            /*
+            if (ce instanceof XYItemEntity) {
+             XYItemEntity e = (XYItemEntity) ce;
+             System.out.println(ce.getToolTipText());
+             System.out.println(e.toString());
+             XYDataset d = e.getDataset();
+             int s = e.getSeriesIndex();
+             int i = e.getItem();
+             String name = ce.getURLText();
+             System.out.println("Ingraphics - X:" + d.getX(s, i) + ",Ingraphics  Y:" + d.getY(s, i) + "Name = " + name);
+            } 
+            */
     }
 
     @Override
-    public void chartMouseMoved(ChartMouseEvent event) {}
-    
-    //@Override // что бы не убирать коменты внутри блока
-    public void chartMouseMoved_tmp(ChartMouseEvent event) {
-        //закоментировал что бы можно было следить за данными по клику
-        
+    public void chartMouseMoved(ChartMouseEvent event) {
+        /*
         // тут похоже реализовавает движение по графику
         Rectangle2D dataArea = this.chartPanel.getScreenDataArea();
         JFreeChart chart = event.getChart();
@@ -580,6 +467,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x); // тут похоже находим координаты нашего y
         
         this.xCrosshair.setValue(x); // это реализация движения шкалы по x y внизу
+        */
       //  this.yCrosshair.setValue(y);
         
         
@@ -591,6 +479,11 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
               System.out.println("Item interpolicia = " + yinterpol );
               }
               */
+        
+                //List<XYSeries> werries = plot.getAnnotations(); // новая конструкция для  plot работает нет пока не ясно
+                //ListIterator<XYSeries> iterator = werries.listIterator();
+        
+        /*
               //данные получаем с графиков пробуем для времени
               List<XYSeries> werries = xyDataset.getSeries();
               ListIterator<XYSeries> iterator = werries.listIterator(); 
@@ -603,20 +496,20 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
                 dataFromGraph.setItem();
                 int iTime = dataFromGraph.getCurrentTime();// получим время из созданного листа
                 curentTime = listTime.get(iTime);
-                String formattedDouble = new DecimalFormat("#0.000000").format(dataFromGraph.getItemData());
-                toFieadTXT += XYDescription + "->" + formattedDouble +"\n" ;
+                toFieadTXT += XYDescription + "->" + dataFromGraph.getItemData() +"\n" ;
               }
               toFieadTXT += "\n" + "Time graph --> " + curentTime + "\n";  
+        
               
-              
-       /* try {
+        try {
             toFieadTXT = new String(toFieadTXT.getBytes("Cp1251"));
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(JavaApplication5.class.getName()).log(Level.SEVERE, null, ex);
         }
               */
    
-              jTextArea1.setText(toFieadTXT);
+             // jTextArea1.setText(toFieadTXT);
+              
               
     }
     
@@ -666,72 +559,49 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
-        jSplitPane2 = new javax.swing.JSplitPane();
         jPanel1 = createContent();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setAutoscrolls(true);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 749, Short.MAX_VALUE)
+            .addGap(0, 510, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        jSplitPane2.setLeftComponent(jPanel1);
-
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
-
-        jSplitPane2.setRightComponent(jScrollPane1);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSplitPane2)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
-                .addContainerGap())
-        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 529, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
     /**
      * @param args the command line arguments
@@ -777,12 +647,10 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     }
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTextArea jTextArea1;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }
 
