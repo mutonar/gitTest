@@ -96,7 +96,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     String[] massName; // Имена полученные в конструкторе
     boolean inversTime = false;
     boolean viewLegend = true;
-    XYPlot plot = new XYPlot();
+    //XYPlot plot = new XYPlot();
 
     //TimeSeriesCollection  xyDataset = (TimeSeriesCollection ) createDataset(); // создадим отдельным элементом для перебора в итератор
    
@@ -115,8 +115,8 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         //jpanel.setPreferredSize(new Dimension(640, 480));
         //add(jpanel);
         //xyDataset = (XYSeriesCollection ) constructorGraph(massColum); // Инициализация тоже должна быть в конструкторе это была рабочая версия
-        plot = constructorGraph(massColum); // вот это и есть две разные шкалы в одном 
-        initComponents();
+      
+      initComponents();
     }
     public NewJFrameSimpleGraph_1() throws FileNotFoundException, IOException{ 
          //       super(s);
@@ -169,7 +169,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         return xySeriesCollection;
     }
     */
-     private JPanel createContent() {
+     private JPanel createContent()  {
         //JFreeChart chart = createChart(createDataset());
        
         //JFreeChart chart = createChart(xyDataset); // тут добавляем сами шкалы и прочее в график
@@ -189,7 +189,13 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         chartPanel.addOverlay(crosshairOverlay);
         }*/
          { // Это работает с plot но нет работы с мышью и прочим =(
-        JFreeChart  chart = createChart(plot); //  это основное что работало
+        //JFreeChart  chart = createChart(plot); //  это основное что работало(НО проблема с Plot)
+        JFreeChart  chart = createChart(); ; // Переносим его в глобальное
+             try {
+                 constructorGraph(massColum, chart); // вот это и есть две разные шкалы в одном 
+             } catch (IOException ex) {
+                 Logger.getLogger(NewJFrameSimpleGraph_1.class.getName()).log(Level.SEVERE, null, ex);
+             }
         this.chartPanel = new ChartPanel(chart);
         this.chartPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         this.chartPanel.setBackground(Color.white);  
@@ -218,13 +224,22 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         return chart;
     }
     
-    // тут создадим график на основе XYPlot
+    // тут создадим график на основе XYPlot лажа с пустыми элементами получилась
     private JFreeChart createChart( XYPlot plot) {
-        JFreeChart chart = new JFreeChart("MyPlot", getFont(), plot, false);
+        JFreeChart chart = new JFreeChart("MyPlot", getFont(), plot, true);
         chart.setBackgroundPaint(Color.WHITE);
         return chart;
     }
-    
+    // тут все будет пусто что бы потом добавлять элементы
+     private JFreeChart createChart() {
+            final JFreeChart chart = ChartFactory.createXYAreaChart(
+        "Окно просмотра графиков",
+        "X1", "Y",
+        null,
+        PlotOrientation.VERTICAL,
+        true, false, false);
+        return chart;
+     }
     
     // тут создаем массивы рандомные и еще в разных системах координат
     private XYDataset createDataset() {
@@ -305,8 +320,8 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
     
     // наши графики из другого проекта // Уже более-менее правильно
     //private XYDataset constructorGraph( int[] massColum ) throws FileNotFoundException, IOException{
-    private XYPlot constructorGraph(int[] massColum) throws FileNotFoundException, IOException{
-
+    private void constructorGraph(int[] massColum, JFreeChart chart) throws FileNotFoundException, IOException{
+    final XYPlot plot = chart.getXYPlot();
     getNamedGraph();
     this.massColum = massColum;  // какие столбцы рисуем при вызове
      // какие колонки используем дл рисования 0 это время его не дергаем
@@ -469,9 +484,9 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         renderer2.setSeriesPaint(0, Color.black);
          // Каждую коллекцию добавляем отдельно
       	plot.setDataset(ic, xyserColl);
-        plot.setRenderer(ic, renderer2); // подпись
-        plot.setRangeAxis(ic, new NumberAxis(nameG));
-        plot.mapDatasetToRangeAxis(ic, ic);
+       // plot.setRenderer(ic, renderer2); // подпись
+       // plot.setRangeAxis(ic, new NumberAxis(nameG));
+       // plot.mapDatasetToRangeAxis(ic, ic);
          }
       break; // если нашли нужные столбец и не нужно еще раз прогонять
       } else continue;// if проверки столбца
@@ -486,7 +501,8 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
      //GanttRenderer r = (GanttRenderer) plot.getRenderer();
     // r.setBaseToolTipGenerator(new IntervalCategoryToolTipGenerator(
     //    "{0}, {1}: {3} - {4}", DateFormat.getDateInstance()));
-     return plot;
+    
+     //return plot; // временно удалим его
     }
     /*
         // тут временные массив не победил его
@@ -507,25 +523,71 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
         return dataset;
     }
 */
-    @Override
-    public void chartMouseClicked(ChartMouseEvent event) {
+    public void chartMouseClicked(ChartMouseEvent cme) {
+        // И полностью скопированный не работает не видит элементов
+        JFreeChart chart = cme.getChart();
+        XYPlot plot_tmp = chart.getXYPlot();
+        // Тестовое смотрим что можно вытащить из plot
+        
+        int tmppoti = plot_tmp.getDatasetCount();
+        //XYDataset testDataset = plot_tmp.getDataset();
+        System.out.println(tmppoti); // Сколько коллекций Plot не факт
+        for(int i=1; i<tmppoti; ++i){
+            System.out.println(plot_tmp.getDomainAxis(i)); 
+            Object ob = plot_tmp.getDataset(i); // он все равно не видит элементы
+            String nameObj = ob.getClass().getSimpleName();
+            if(nameObj.equals("TimeSeriesCollection")){
+                TimeSeriesCollection tmpSeries = (TimeSeriesCollection) plot_tmp.getDataset(i);
+                List<XYSeries> tmp_lise = tmpSeries.getSeries();
+            }
+              if(nameObj.equals("XYSeriesCollection")){
+                XYSeriesCollection tmpSeries = (XYSeriesCollection) plot_tmp.getDataset(i);
+                List<XYSeries> tmp_lise = tmpSeries.getSeries();
+            }
+              
+              System.out.println(nameObj);
+              System.out.println(plot_tmp.getDataset(i).getSeriesCount());
+        }
+    }
+        
+    //@Override
+    public void chartMouseClicked_old(ChartMouseEvent event) {
         
       
         // тут похоже реализовавает движение по графику
         Rectangle2D dataArea = this.chartPanel.getScreenDataArea();
         JFreeChart chart = event.getChart();
-        XYPlot plot = (XYPlot) chart.getPlot();
-        // узнаем что такое XYPlot
-         
+        //XYPlot plot_tmp = chart.getXYPlot();
+        XYPlot plot_tmp = (XYPlot) chart.getPlot();
+        // узнаем что такое XYPlot 
+        // Этим всем выдергиваем все из Plot
+        int tmppoti = plot_tmp.getDatasetCount();
+        //XYDataset testDataset = plot_tmp.getDataset();
+        System.out.println(tmppoti); // Сколько коллекций Plot не факт
+        for(int i=1; i<tmppoti; ++i){
+            Object ob = plot_tmp.getDataset(i);  // Присваивает нулевой писец =(         
+            String nameObj = ob.getClass().getSimpleName(); // странно тут не видит имя
+            List<XYSeries> werries;
+            if(nameObj.equals("TimeSeriesCollection")){
+                TimeSeriesCollection tmpSeries = (TimeSeriesCollection) plot_tmp.getDataset(i);
+                werries = tmpSeries.getSeries();
+            }
+              if(nameObj.equals("XYSeriesCollection")){ // так как добавляем только ее она и будет
+                XYSeriesCollection tmpSeries = (XYSeriesCollection) plot_tmp.getDataset(i);
+                werries = tmpSeries.getSeries();
+            }
+              else continue; // Что то не поняли что в Plot пропускаем
+              
         
-        ValueAxis xAxis = plot.getDomainAxis();
+        
+        ValueAxis xAxis = plot_tmp.getDomainAxis();
         double x = xAxis.java2DToValue(event.getTrigger().getX(), dataArea, RectangleEdge.BOTTOM);
-        double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x); // тут похоже находим координаты нашего y
+        //double y = DatasetUtilities.findYValue(plot.getDataset(), 0, x); // тут похоже находим координаты нашего y
         
-        this.xCrosshair.setValue(x); // это реализация движения шкалы по x y внизу
-      //  this.yCrosshair.setValue(y);
+        //this.xCrosshair.setValue(x); // это реализация движения шкалы по x y внизу // Тут вылетает при XYpot
+        //this.yCrosshair.setValue(y);
         
-        
+
        //данные получаем с графиков для обычных
             /*  List<XYSeries> werries = xyDataset.getSeries();
               ListIterator<XYSeries> iterator = werries.listIterator(); 
@@ -535,7 +597,9 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
               }
               */
               //данные получаем с графиков пробуем для времени
-              List<XYSeries> werries = xyDataset.getSeries();
+              // это до этого когда было построено на XYSeriesCollection
+              //List<XYSeries> werries = xyDataset.getSeries(); 
+              
               ListIterator<XYSeries> iterator = werries.listIterator(); 
               String toFieadTXT = "";
               String curentTime = "";
@@ -558,7 +622,7 @@ public class NewJFrameSimpleGraph_1 extends javax.swing.JFrame implements ChartM
               */
    
               jTextArea1.setText(toFieadTXT);
-        
+    }
     }
 
     @Override
