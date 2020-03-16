@@ -10,7 +10,7 @@
  */
 public class Main {
 
-    String tmp1 = "12345";
+    String tmp1 = "No";
     public static void main(String[] arg){
         System.out.println("Hellow Git!");
         System.out.println("Hellow two PS!");
