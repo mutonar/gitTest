@@ -9,12 +9,13 @@
  * @author ad
  */
 public class Main {
+    String tmp1 = "12345";
     public static void main(String[] arg){
         System.out.println("Hellow Git!");
         System.out.println("Hellow two PS!");
         System.out.println("Hellow Firs ps!");
     }
-        public String getData(){return null;
+        public String getData(){return tmp1;
 }
     
 }
