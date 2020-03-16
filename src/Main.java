@@ -9,6 +9,7 @@
  * @author ad
  */
 public class Main {
+
     String tmp1 = "12345";
     public static void main(String[] arg){
         System.out.println("Hellow Git!");
