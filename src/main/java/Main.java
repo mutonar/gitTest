@@ -14,4 +14,7 @@ public class Main {
         System.out.println("Hellow two PS!");
     }
     
+    public String getData(){return null;
+}
+    
 }
