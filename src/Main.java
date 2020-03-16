@@ -11,7 +11,10 @@
 public class Main {
     public static void main(String[] arg){
         System.out.println("Hellow Git!");
+        System.out.println("Hellow two PS!");
         System.out.println("Hellow Firs ps!");
     }
+        public String getData(){return null;
+}
     
 }
